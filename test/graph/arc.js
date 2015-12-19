@@ -33,7 +33,26 @@ describe('Arc', () => {
   });
 
   describe('class methods', () => {
+    describe('#equals', () => {
 
+      it('should return true for equal vertices', () => {
+        let a = arc.create('v1', 'v2', 10);
+
+        let result = a.equals(a);
+
+        expect(result).to.be.true;
+      });
+
+      it ('should return false for non-equal vertices', () => {
+        let a1 = arc.create('v1', 'v2', 10);
+        let a2 = arc.create('v2', 'v3', 10);
+
+        let result = a1.equals(a2);
+
+        expect(result).to.be.false;
+      });
+
+    });
   });
 
 });

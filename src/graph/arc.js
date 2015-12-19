@@ -1,6 +1,6 @@
 (function () {
   'use strict';
-  
+
   var count = 0;
 
   function id_gen() {
@@ -14,6 +14,10 @@
       this.from = from;
       this.to = to;
       this.capacity = capacity;
+    }
+
+    equals(other) {
+      return this.id === other.id;
     }
   }
 
