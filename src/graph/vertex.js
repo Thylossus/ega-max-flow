@@ -12,6 +12,10 @@
     constructor() {
       this.id = id_gen();
     }
+
+    equals(other) {
+      return this.id === other.id;
+    }
   }
 
   exports.create = () => {
