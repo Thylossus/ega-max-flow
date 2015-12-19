@@ -1,3 +1,6 @@
+const random = require('lodash/number/random');
+const graphConfig = require('../../config/graph');
+
 (function () {
   'use strict';
 
@@ -11,6 +14,8 @@
   class Vertex {
     constructor() {
       this.id = id_gen();
+      this.x = random(graphConfig.GRID_SIZE);
+      this.y = random(graphConfig.GRID_SIZE);
     }
 
     equals(other) {

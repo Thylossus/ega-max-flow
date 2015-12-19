@@ -4,6 +4,7 @@ var chai = require('chai');
 var expect = chai.expect;
 
 var vertex = require('../../src/graph/vertex');
+var graphConfig = require('../../config/graph');
 
 describe('Vertex', () => {
 
@@ -16,6 +17,11 @@ describe('Vertex', () => {
 
         expect(v).to.be.an('object');
         expect(v).to.have.property('id').that.is.a('string');
+        expect(v).to.have.property('x').that.is.a('number');
+        expect(v).to.have.property('y').that.is.a('number');
+
+        expect(v.x).to.be.below(graphConfig.GRID_SIZE + 1);
+        expect(v.y).to.be.below(graphConfig.GRID_SIZE +1);
 
       });
 
