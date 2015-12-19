@@ -11,8 +11,8 @@ describe('Arc', () => {
 
     it('should instatiate', () => {
 
-      let from     = 'n1';
-      let to       = 'n2';
+      let from     = 'v1';
+      let to       = 'v2';
       let capacity = 10;
 
       let a = arc.create(from, to, capacity);
