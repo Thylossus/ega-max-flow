@@ -1,0 +1,28 @@
+{
+  "name": "ega-maxflow",
+  "version": "0.0.1",
+  "description": "Assignment for the lecture \"Efficient Graph Algorithms\" at TU Darmstadt.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./test/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@scm.informatik.tu-darmstadt.de/tk11raho/tk11raho-ega-maxflow.git"
+  },
+  "keywords": [
+    "graph",
+    "max flow problem",
+    "ford-fulkerson",
+    "edmonds-karp",
+    "dinic",
+    "preflow-push"
+  ],
+  "author": "Tobias Kahse <tobias.kahse@stud.tu-darmstadt.de>",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "chai": "^3.4.1",
+    "gulp": "^3.9.0",
+    "mocha": "^2.3.4"
+  }
+}
