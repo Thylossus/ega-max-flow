@@ -12,11 +12,14 @@
   },
   "keywords": [
     "graph",
-    "max flow problem",
+    "residual network",
+    "max-flow problem",
     "ford-fulkerson",
     "edmonds-karp",
     "dinic",
-    "preflow-push"
+    "preflow-push",
+    "push-relabel",
+    "goldberg-tarjan"
   ],
   "author": "Tobias Kahse <tobias.kahse@stud.tu-darmstadt.de>",
   "license": "UNLICENSED",
