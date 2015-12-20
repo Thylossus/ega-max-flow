@@ -21,10 +21,10 @@ const calculation = require('../util/calculation');
       });
 
       let arcs = vertices.map((v1) => {
-          return vertices.map((v2) => {
-            return arc.create(v1, v2, random(this.maxCapacity));
-          });
+        return vertices.map((v2) => {
+          return arc.create(v1, v2, random(this.maxCapacity));
         });
+      });
       arcs = flatten(arcs)
         .sort((a1, a2) => {
           return a1.compare(a2);

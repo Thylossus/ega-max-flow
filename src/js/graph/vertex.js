@@ -25,5 +25,5 @@ const graphConfig = require('../../../config/graph');
 
   exports.create = () => {
     return new Vertex();
-  }
+  };
 })();

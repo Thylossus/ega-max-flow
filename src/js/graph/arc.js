@@ -30,6 +30,6 @@ const calculation = require('../util/calculation');
 
   exports.create = (from, to, capacity) => {
     return new Arc(from, to, capacity);
-  }
+  };
 
 })();

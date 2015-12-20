@@ -26,7 +26,7 @@ const graphConfig = require('../../../config/graph');
   };
 
   function isZero(x) {
-    return Math.abs(x) < graphConfig.ZERO_TOLERANCE
+    return Math.abs(x) < graphConfig.ZERO_TOLERANCE;
   };
 
   exports.equalPosition = (v, w) => {
@@ -130,7 +130,7 @@ const graphConfig = require('../../../config/graph');
       // True if intersection is within the line segments, false otherwise
       return t >= 0 && t <= 1 && s >= 0 && s <= 1;
     }
-  }
+  };
 
   exports.euclidianDistance = (a, b) => {
     if (!a || !b) {
