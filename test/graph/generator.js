@@ -10,7 +10,7 @@ describe('Generator', () => {
   describe('module methods', () => {
     describe('#create', () => {
 
-      it('should instatiate', () => {
+      it('should instantiate', () => {
         let numberOfVertices = 10;
         let maxCapacity = 100;
 
@@ -47,6 +47,22 @@ describe('Generator', () => {
         });
 
         expect(noArcExceedsMaxCapacity).to.be.true;
+      });
+
+      it('the returned graph should have a backwards arc for each arc', () => {
+        let numberOfVertices = 10;
+        let maxCapacity = 100;
+
+        let gen = generator.create(numberOfVertices, maxCapacity);
+        let graph = gen.run();
+
+        let eachArcHasABackwardsArc = graph.arcs.every((a1) => {
+          return graph.arcs.some((a2) => {
+            return a1.from.equals(a2.to) && a1.to.equals(a2.from);
+          });
+        });
+
+        expect(eachArcHasABackwardsArc).to.be.true;
       });
 
     });
