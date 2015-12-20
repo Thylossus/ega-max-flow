@@ -29,6 +29,7 @@
     "mocha": "^2.3.4"
   },
   "dependencies": {
+    "grommet": "^0.4.1",
     "lodash": "^3.10.1"
   }
 }

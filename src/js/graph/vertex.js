@@ -1,5 +1,5 @@
 const random = require('lodash/number/random');
-const graphConfig = require('../../config/graph');
+const graphConfig = require('../../../config/graph');
 
 (function () {
   'use strict';

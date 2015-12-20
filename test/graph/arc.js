@@ -3,8 +3,8 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const arc = require('../../src/graph/arc');
-const vertex = require('../../src/graph/vertex');
+const arc = require('../../src/js/graph/arc');
+const vertex = require('../../src/js/graph/vertex');
 const graphConfig = require('../../config/graph');
 
 describe('Arc', () => {

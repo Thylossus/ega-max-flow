@@ -3,7 +3,7 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const generator = require('../../src/graph/generator');
+const generator = require('../../src/js/graph/generator');
 
 describe('Generator', () => {
 

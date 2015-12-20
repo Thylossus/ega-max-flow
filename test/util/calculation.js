@@ -3,9 +3,9 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const calculation = require('../../src/util/calculation');
-const arc = require('../../src/graph/arc');
-const vertex = require('../../src/graph/vertex');
+const calculation = require('../../src/js/util/calculation');
+const arc = require('../../src/js/graph/arc');
+const vertex = require('../../src/js/graph/vertex');
 
 describe('Calculation', () => {
 

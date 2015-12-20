@@ -3,7 +3,7 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const vertex = require('../../src/graph/vertex');
+const vertex = require('../../src/js/graph/vertex');
 const graphConfig = require('../../config/graph');
 
 describe('Vertex', () => {

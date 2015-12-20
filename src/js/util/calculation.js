@@ -5,7 +5,7 @@
  * 	http://www.codeproject.com/Tips/862988/Find-the-Intersection-Point-of-Two-Line-Segments
  */
 
-const graphConfig = require('../../config/graph');
+const graphConfig = require('../../../config/graph');
 
 (function () {
   'use strict';
