@@ -1,21 +1,32 @@
 var gulp = require('gulp');
-var path = require('path');
-var devGulpTasks = require('grommet/utils/gulp/gulp-tasks');
+var webpack = require('webpack');
 
-var opts = {
-  copyAssets: [
-    'src/index.html',
-    {
-      asset: 'src/img/**',
-      dist: 'dist/img/'
+gulp.task('webpack', function () {
+  webpack({
+    entry: './index.js',
+    output: {
+      filename: 'bundle.js',
+      path: 'dist'
+    },
+    module: {
+      loaders: [
+        { test: /\.json$/, loader: 'json' }
+      ]
     }
-  ],
-  jsAssets: ['src/js/**/*.js'],
-  mainJs: 'src/js/index.js',
-  mainScss: 'src/scss/index.scss',
-  devServerPort: 9000,
-  customEslintPath: path.resolve(__dirname, 'customEslintrc'),
-  scsslint: true
-};
+  }, function (err, status) {
+    if (err) {
+      throw new Error('webpack error', err);
+    }
 
-devGulpTasks(gulp, opts);
+    console.log('[webpack]', status.toString());
+  });
+});
+
+gulp.task('copy', function () {
+  gulp.src(['./src/index.html', './src/js/index.js', './libs/sigma.min.js'])
+    .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('default', ['copy', 'webpack'], function () {
+  gulp.watch(['./src/**/*.js', './src/index.html', './config/**/*.json', './index.js'], ['copy', 'webpack']);
+});

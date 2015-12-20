@@ -26,10 +26,11 @@
   "devDependencies": {
     "chai": "^3.4.1",
     "gulp": "^3.9.0",
-    "mocha": "^2.3.4"
+    "json-loader": "^0.5.4",
+    "mocha": "^2.3.4",
+    "webpack": "^1.12.9"
   },
   "dependencies": {
-    "grommet": "^0.4.1",
     "lodash": "^3.10.1"
   }
 }

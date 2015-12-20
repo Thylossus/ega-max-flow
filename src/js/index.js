@@ -1,27 +1,19 @@
-require('../scss/index.scss');
+const generator = egamaxflow.graph.generator;
 
-var React = require('react');
-var App = require('grommet/components/App');
-var Header = require('grommet/components/Header');
-var Title = require('grommet/components/Title');
+(function () {
+  'use strict';
 
-var Main = React.createClass({
-  render: function() {
-    return (
-      <App centered={false}>
-        <Header direction="row" justify="between" large={true} pad={{horizontal: 'medium'}}>
-          <Title>
-            <h1>
-              Efficient Graph Algorithms - Max-Flow Problem
-            </h1>
-          </Title>
-        </Header>
-      </App>
-    );
-  }
-});
+  let s = new sigma('container');
+  let graph = generator.create(10, 100).run();
 
-var element = document.getElementById('content');
-React.render(React.createElement(Main), element);
+  graph.vertices.forEach((vertex) => {
+    s.graph.addNode(vertex);
+  });
 
-document.body.classList.remove('loading');
+  graph.arcs.forEach((arc) => {
+    s.graph.addEdge(arc);
+  });
+
+  s.refresh();
+
+})();

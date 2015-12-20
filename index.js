@@ -1,9 +1,16 @@
-const generator = require('./src/graph/generator');
+const graph = require('./src/js/graph');
+const util = require('./src/js/util');
 
 (function () {
   'use strict';
 
-  let gen = generator.create(10, 100);
+  // TODO: think of which tools to expose
+  exports.graph = graph;
+  exports.util = util;
 
-  console.log(gen.run());
+  if (window) {
+    let egamaxflow = window.egamaxflow = {};
+    egamaxflow.graph = graph;
+    egamaxflow.util = util;
+  }
 })();
