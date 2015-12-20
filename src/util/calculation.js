@@ -29,7 +29,7 @@ const graphConfig = require('../../config/graph');
     return Math.abs(x) < graphConfig.ZERO_TOLERANCE
   };
 
-  function equal(v, w) {
+  exports.equalPosition = (v, w) => {
     return v.x === w.x && v.y === w.y;
   };
 
@@ -39,7 +39,7 @@ const graphConfig = require('../../config/graph');
    * @param  {Arc}      segmentB  Line segment B
    * @return {boolean}            True if the line segments intersect, false otherwise.
    */
-  exports.check = (segmentA, segmentB) => {
+  exports.intersect = (segmentA, segmentB) => {
     // Line segment a is the line between A and B
     // Line segment b is the line between C and D
     // P = B - A
@@ -71,26 +71,26 @@ const graphConfig = require('../../config/graph');
     var D = segmentB.to;
 
     // Check for endpoint equality
-    // console.log('A = C?', equal(A, C), 'B != D?', equal(B, D));
-    if (equal(A, C) && !equal(B, D)) {
+    // console.log('A = C?', exports.equalPosition(A, C), 'B != D?', exports.equalPosition(B, D));
+    if (exports.equalPosition(A, C) && !exports.equalPosition(B, D)) {
       // Common start point but not overlapping
       return false;
     }
 
-    // console.log('A = D?', equal(A, D), 'B != C?', equal(B,C));
-    if (equal(A, D) && !equal(B, C)) {
+    // console.log('A = D?', exports.equalPosition(A, D), 'B != C?', exports.equalPosition(B,C));
+    if (exports.equalPosition(A, D) && !exports.equalPosition(B, C)) {
       // Common start and end point but not overlapping
       return false;
     }
 
-    // console.log('B = C?', equal(B, C), 'A != D?', equal(A,D));
-    if (equal(B, C) && !equal(A, D)) {
+    // console.log('B = C?', exports.equalPosition(B, C), 'A != D?', exports.equalPosition(A,D));
+    if (exports.equalPosition(B, C) && !exports.equalPosition(A, D)) {
       // Common end and start point but not overlapping
       return false;
     }
 
-    // console.log('B = D?', equal(B, D), 'A != C?', equal(A,C));
-    if (equal(B, D) && !equal(A, C)) {
+    // console.log('B = D?', exports.equalPosition(B, D), 'A != C?', exports.equalPosition(A,C));
+    if (exports.equalPosition(B, D) && !exports.equalPosition(A, C)) {
       // Common end point but not overlapping
       return false;
     }
@@ -111,8 +111,8 @@ const graphConfig = require('../../config/graph');
         return false;
       } else {
         // Collinear
-        // If segments are equal except for their direction, they do not intersect (reverse arcs)
-        if (equal(A, D) && equal(B, C)) {
+        // If segments are exports.equalPosition except for their direction, they do not intersect (reverse arcs)
+        if (exports.equalPosition(A, D) && exports.equalPosition(B, C)) {
           return false;
         }
 
@@ -131,4 +131,23 @@ const graphConfig = require('../../config/graph');
       return t >= 0 && t <= 1 && s >= 0 && s <= 1;
     }
   }
+
+  exports.euclidianDistance = (a, b) => {
+    if (!a || !b) {
+      throw new Error('Missing parameter. Expected two nodes with x/y coordinates.');
+    }
+
+    if (!a.hasOwnProperty('x') || !a.hasOwnProperty('y')) {
+      throw new Error('The first argument is not a vertex. Missing x/y coordinates.');
+    }
+
+    if (!b.hasOwnProperty('x') || !b.hasOwnProperty('y')) {
+      throw new Error('The second argument is not a vertex. Missing x/y coordinates.');
+    }
+
+    let deltaX = b.x - a.x;
+    let deltaY = b.y - a.y;
+
+    return Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+  };
 })();

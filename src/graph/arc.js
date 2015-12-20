@@ -1,3 +1,5 @@
+const calculation = require('../util/calculation');
+
 (function () {
   'use strict';
 
@@ -14,10 +16,15 @@
       this.from = from;
       this.to = to;
       this.capacity = capacity;
+      this.distance = calculation.euclidianDistance(from, to);
     }
 
     equals(other) {
       return this.id === other.id;
+    }
+
+    compare(other) {
+      return this.distance - other.distance;
     }
   }
 

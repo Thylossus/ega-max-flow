@@ -1,11 +1,11 @@
 'use strict';
 
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var graph = require('../../src/graph/graph');
-var vertex = require('../../src/graph/vertex');
-var arc = require('../../src/graph/arc');
+const graph = require('../../src/graph/graph');
+const vertex = require('../../src/graph/vertex');
+const arc = require('../../src/graph/arc');
 
 describe('Graph', () => {
 

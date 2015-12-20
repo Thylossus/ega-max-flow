@@ -1,9 +1,9 @@
 'use strict';
 
-var chai = require('chai');
-var expect = chai.expect;
+const chai = require('chai');
+const expect = chai.expect;
 
-var generator = require('../../src/graph/generator');
+const generator = require('../../src/graph/generator');
 
 describe('Generator', () => {
 
