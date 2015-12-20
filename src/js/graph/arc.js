@@ -15,6 +15,8 @@ const calculation = require('../util/calculation');
       this.id = id_gen();
       this.from = from;
       this.to = to;
+      this.source = from.id;
+      this.target = to.id;
       this.capacity = capacity;
       this.distance = calculation.euclidianDistance(from, to);
     }

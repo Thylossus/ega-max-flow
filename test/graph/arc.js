@@ -24,10 +24,14 @@ describe('Arc', () => {
         expect(a).to.have.property('id').that.is.an('string');
         expect(a).to.have.property('from').that.is.an('object');
         expect(a).to.have.property('to').that.is.a('object');
+        expect(a).to.have.property('source').that.is.a('string');
+        expect(a).to.have.property('target').that.is.a('string');
         expect(a).to.have.property('capacity').that.is.a('number');
         expect(a).to.have.property('distance').that.is.a('number');
         expect(a.from).to.equal(from);
         expect(a.to).to.equal(to);
+        expect(a.source).to.equal(from.id);
+        expect(a.target).to.equal(to.id);
         expect(a.capacity).to.equal(capacity);
 
       });
