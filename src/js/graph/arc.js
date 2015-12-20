@@ -1,4 +1,5 @@
 const calculation = require('../util/calculation');
+const sigmaConfig = require('../../../config/sigma');
 
 (function () {
   'use strict';
@@ -19,6 +20,9 @@ const calculation = require('../util/calculation');
       this.target = to.id;
       this.capacity = capacity;
       this.distance = calculation.euclidianDistance(from, to);
+      this.label = '0/' + this.capacity;
+      this.type = sigmaConfig.EDGE_TYPE;
+      this.color = sigmaConfig.EDGE_COLOR;
     }
 
     equals(other) {

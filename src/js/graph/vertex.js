@@ -18,7 +18,9 @@ const sigmaConfig = require('../../../config/sigma');
       this.x = x === undefined ? random(graphConfig.GRID_SIZE) : x;
       this.y = y === undefined ? random(graphConfig.GRID_SIZE) : y;
       this.size = sigmaConfig.NODE_SIZE;
+      this.color = sigmaConfig.NODE_COLOR;
       this.label = this.id;
+      this.type = graphConfig.VERTEX_TYPE.OTHER;
     }
 
     equals(other) {

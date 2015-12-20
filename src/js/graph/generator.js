@@ -23,7 +23,15 @@ const graphConfig = require('../../../config/graph');
       let vertices = quadrants.map((quadrant) => {
         let x = graphConfig.VERTICES_ORDERED ? quadrant.x1 : random(quadrant.x1, quadrant.x2);
         let y = graphConfig.VERTICES_ORDERED ? quadrant.y1 : random(quadrant.y1, quadrant.y2);
-        return vertex.create(x, y);
+        let v = vertex.create(x, y);
+
+        if (quadrant.id === 0) {
+          v.type = graphConfig.VERTEX_TYPE.SOURCE;
+        } else if (quadrant.id === this.numberOfVertices - 1) {
+          v.type = graphConfig.VERTEX_TYPE.SINK;
+        }
+
+        return v;
       });
 
       let arcs = vertices.map((v1) => {
@@ -51,6 +59,12 @@ const graphConfig = require('../../../config/graph');
             return !calculation.intersect(arc, other);
           });
         });
+
+      // Adjust capacities for arcs that are connected to the source or the sink.
+      // These arcs must not belong to a minimum cut.
+      let maxUsedCapacity = arcs.reduce((max, arc) => {
+        return Math.max(max, arc.capacity);
+      }, 0);
 
       return graph.create(vertices, arcs);
     }

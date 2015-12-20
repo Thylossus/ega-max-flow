@@ -1,3 +1,6 @@
 {
-  "NODE_SIZE": 2
+  "NODE_SIZE": 2,
+  "NODE_COLOR": "#666",
+  "EDGE_COLOR": "#ccc",
+  "EDGE_TYPE": "line"
 }

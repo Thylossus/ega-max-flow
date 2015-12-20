@@ -4,6 +4,7 @@ const chai = require('chai');
 const expect = chai.expect;
 
 const generator = require('../../src/js/graph/generator');
+const graphConfig = require('../../config/graph');
 
 describe('Generator', () => {
 
@@ -63,6 +64,24 @@ describe('Generator', () => {
         });
 
         expect(eachArcHasABackwardsArc).to.be.true;
+      });
+
+      it('the returned graph should have a source and a sink', () => {
+        let numberOfVertices = 10;
+        let maxCapacity = 100;
+
+        let gen = generator.create(numberOfVertices, maxCapacity);
+        let graph = gen.run();
+
+        for (var i = 0; i < graph.vertices.length; i++) {
+          if (i !== 0 && i !== graph.vertices.length - 1) {
+            expect(graph.vertices[i].type).to.be.equal(graphConfig.VERTEX_TYPE.OTHER);
+          } else if (i === 0) {
+            expect(graph.vertices[i].type).to.be.equal(graphConfig.VERTEX_TYPE.SOURCE);
+          } else {
+            expect(graph.vertices[i].type).to.be.equal(graphConfig.VERTEX_TYPE.SINK);
+          }
+        }
       });
 
     });

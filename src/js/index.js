@@ -3,17 +3,21 @@ const generator = egamaxflow.graph.generator;
 (function () {
   'use strict';
 
-  let s = new sigma('container');
+
   let graph = generator.create(10, 100).run();
+  graph.nodes = graph.vertices;
+  graph.edges = graph.arcs;
 
-  graph.vertices.forEach((vertex) => {
-    s.graph.addNode(vertex);
+
+  let s = new sigma({
+    graph: graph,
+    renderer: {
+      container: document.getElementById('container'),
+      type: 'canvas'
+    },
+    settings: {
+      edgeLabelSize: 'proportional'
+    }
   });
-
-  graph.arcs.forEach((arc) => {
-    s.graph.addEdge(arc);
-  });
-
-  s.refresh();
 
 })();

@@ -5,6 +5,7 @@ const expect = chai.expect;
 
 const vertex = require('../../src/js/graph/vertex');
 const graphConfig = require('../../config/graph');
+const sigmaConfig = require('../../config/sigma');
 
 describe('Vertex', () => {
 
@@ -19,10 +20,16 @@ describe('Vertex', () => {
         expect(v).to.have.property('x').that.is.a('number');
         expect(v).to.have.property('y').that.is.a('number');
         expect(v).to.have.property('size').that.is.a('number');
+        expect(v).to.have.property('color').that.is.a('string');
         expect(v).to.have.property('label').that.is.a('string');
+        expect(v).to.have.property('type').that.is.a('number');
 
         expect(v.x).to.be.below(graphConfig.GRID_SIZE + 1);
         expect(v.y).to.be.below(graphConfig.GRID_SIZE +1);
+        expect(v.size).to.be.equal(sigmaConfig.NODE_SIZE);
+        expect(v.color).to.be.equal(sigmaConfig.NODE_COLOR);
+        expect(v.label).to.be.equal(v.id);
+        expect(v.type).to.be.equal(graphConfig.VERTEX_TYPE.OTHER);
 
       });
 
@@ -60,6 +67,7 @@ describe('Vertex', () => {
       });
 
     });
+
   });
 
 });

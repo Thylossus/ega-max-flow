@@ -6,6 +6,7 @@ const expect = chai.expect;
 const arc = require('../../src/js/graph/arc');
 const vertex = require('../../src/js/graph/vertex');
 const graphConfig = require('../../config/graph');
+const sigmaConfig = require('../../config/sigma');
 
 describe('Arc', () => {
 
@@ -27,12 +28,18 @@ describe('Arc', () => {
         expect(a).to.have.property('source').that.is.a('string');
         expect(a).to.have.property('target').that.is.a('string');
         expect(a).to.have.property('capacity').that.is.a('number');
+        expect(a).to.have.property('label').that.is.an('string');
         expect(a).to.have.property('distance').that.is.a('number');
+        expect(a).to.have.property('type').that.is.a('string');
+        expect(a).to.have.property('color').that.is.a('string');
         expect(a.from).to.equal(from);
         expect(a.to).to.equal(to);
         expect(a.source).to.equal(from.id);
         expect(a.target).to.equal(to.id);
         expect(a.capacity).to.equal(capacity);
+        expect(a.label).to.equal('0/' + capacity);
+        expect(a.type).to.equal(sigmaConfig.EDGE_TYPE);
+        expect(a.color).to.equal(sigmaConfig.EDGE_COLOR);
 
       });
 
