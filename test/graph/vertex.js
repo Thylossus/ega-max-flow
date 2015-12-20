@@ -19,6 +19,8 @@ describe('Vertex', () => {
         expect(v).to.have.property('id').that.is.a('string');
         expect(v).to.have.property('x').that.is.a('number');
         expect(v).to.have.property('y').that.is.a('number');
+        expect(v).to.have.property('size').that.is.a('number');
+        expect(v).to.have.property('label').that.is.a('string');
 
         expect(v.x).to.be.below(graphConfig.GRID_SIZE + 1);
         expect(v.y).to.be.below(graphConfig.GRID_SIZE +1);

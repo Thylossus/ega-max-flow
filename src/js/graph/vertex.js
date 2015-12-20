@@ -1,5 +1,6 @@
 const random = require('lodash/number/random');
 const graphConfig = require('../../../config/graph');
+const sigmaConfig = require('../../../config/sigma');
 
 (function () {
   'use strict';
@@ -16,6 +17,8 @@ const graphConfig = require('../../../config/graph');
       this.id = id_gen();
       this.x = random(graphConfig.GRID_SIZE);
       this.y = random(graphConfig.GRID_SIZE);
+      this.size = sigmaConfig.NODE_SIZE;
+      this.label = this.id;
     }
 
     equals(other) {
