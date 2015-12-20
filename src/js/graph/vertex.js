@@ -13,10 +13,10 @@ const sigmaConfig = require('../../../config/sigma');
   }
 
   class Vertex {
-    constructor() {
+    constructor(x, y) {
       this.id = id_gen();
-      this.x = random(graphConfig.GRID_SIZE);
-      this.y = random(graphConfig.GRID_SIZE);
+      this.x = x === undefined ? random(graphConfig.GRID_SIZE) : x;
+      this.y = y === undefined ? random(graphConfig.GRID_SIZE) : y;
       this.size = sigmaConfig.NODE_SIZE;
       this.label = this.id;
     }
@@ -26,7 +26,7 @@ const sigmaConfig = require('../../../config/sigma');
     }
   }
 
-  exports.create = () => {
-    return new Vertex();
+  exports.create = (x, y) => {
+    return new Vertex(x, y);
   };
 })();

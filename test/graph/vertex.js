@@ -12,7 +12,6 @@ describe('Vertex', () => {
     describe('#create', () => {
 
       it('should instatiate', () => {
-
         let v = vertex.create();
 
         expect(v).to.be.an('object');
@@ -25,6 +24,16 @@ describe('Vertex', () => {
         expect(v.x).to.be.below(graphConfig.GRID_SIZE + 1);
         expect(v.y).to.be.below(graphConfig.GRID_SIZE +1);
 
+      });
+
+      it('should support custom position', () => {
+        let x = 10;
+        let y = 10;
+        let v = vertex.create(x, y);
+
+        expect(v).to.be.an('object');
+        expect(v.x).to.equal(x);
+        expect(v.y).to.equal(y);
       });
 
     });

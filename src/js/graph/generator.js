@@ -1,10 +1,11 @@
-const range = require('lodash/utility/range');
 const random = require('lodash/number/random');
 const flatten = require('lodash/array/flatten');
 const vertex = require('./vertex');
 const arc = require('./arc');
 const graph = require('./graph');
 const calculation = require('../util/calculation');
+const square = require('../util/square');
+const graphConfig = require('../../../config/graph');
 
 (function () {
   'use strict';
@@ -16,8 +17,13 @@ const calculation = require('../util/calculation');
     }
 
     run() {
-      let vertices = range(this.numberOfVertices).map(() => {
-        return vertex.create();
+      let separatedGrid = square.separate(graphConfig.GRID_SIZE, this.numberOfVertices);
+      let quadrants = separatedGrid.quadrants.slice(0, this.numberOfVertices);
+
+      let vertices = quadrants.map((quadrant) => {
+        let x = graphConfig.VERTICES_ORDERED ? quadrant.x1 : random(quadrant.x1, quadrant.x2);
+        let y = graphConfig.VERTICES_ORDERED ? quadrant.y1 : random(quadrant.y1, quadrant.y2);
+        return vertex.create(x, y);
       });
 
       let arcs = vertices.map((v1) => {
