@@ -19,8 +19,9 @@ const sigmaConfig = require('../../../config/sigma');
       this.source = from.id;
       this.target = to.id;
       this.capacity = capacity;
+      this.flow = 0;
       this.distance = calculation.euclidianDistance(from, to);
-      this.label = '0/' + this.capacity;
+      this.label = this.flow + '/' + this.capacity;
       this.type = sigmaConfig.EDGE_TYPE;
       this.color = sigmaConfig.EDGE_COLOR;
     }
@@ -35,8 +36,18 @@ const sigmaConfig = require('../../../config/sigma');
 
     setCapacity(capacity) {
       this.capacity = capacity;
-      this.label = '0/' + this.capacity;
+      this.label = this.flow + '/' + this.capacity;
 
+      return this;
+    }
+
+    setFlow(flow) {
+      if (flow > this.capacity) {
+        throw new Error('Flow exceeds capacity');
+      }
+
+      this.flow = flow;
+      this.label = this.flow + '/' + this.capacity;
       return this;
     }
   }

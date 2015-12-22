@@ -28,6 +28,7 @@ describe('Arc', () => {
         expect(a).to.have.property('source').that.is.a('string');
         expect(a).to.have.property('target').that.is.a('string');
         expect(a).to.have.property('capacity').that.is.a('number');
+        expect(a).to.have.property('flow').that.is.a('number');
         expect(a).to.have.property('label').that.is.an('string');
         expect(a).to.have.property('distance').that.is.a('number');
         expect(a).to.have.property('type').that.is.a('string');
@@ -37,7 +38,8 @@ describe('Arc', () => {
         expect(a.source).to.equal(from.id);
         expect(a.target).to.equal(to.id);
         expect(a.capacity).to.equal(capacity);
-        expect(a.label).to.equal('0/' + capacity);
+        expect(a.flow).to.equal(0);
+        expect(a.label).to.equal(a.flow + '/' + capacity);
         expect(a.type).to.equal(sigmaConfig.EDGE_TYPE);
         expect(a.color).to.equal(sigmaConfig.EDGE_COLOR);
 
@@ -125,10 +127,55 @@ describe('Arc', () => {
         let v1 = vertex.create();
         let v2 = vertex.create();
         let a = arc.create(v1, v2, 10);
+        let capacity = 11;
 
-        a.setCapacity(11);
+        a.setCapacity(capacity);
 
-        expect(a.label).to.match(/\/11/);
+        expect(a.label).to.equal(a.flow + "/" + capacity);
+      });
+
+    });
+
+    describe('#setFlow', () => {
+
+      it('should update flow', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 10);
+
+        a.setFlow(5);
+
+        expect(a.flow).to.equal(5);
+      });
+
+      it('should throw an exception if flow exceeds capacity', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 10);
+        let setFlow = a.setFlow.bind(a, 15);
+
+        expect(setFlow).to.throw(Error);
+        expect(setFlow).to.throw(/exceeds capacity/);
+      });
+
+      it('should return the arc object', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 10);
+
+        expect(a.setFlow(5)).to.equal(a);
+      });
+
+      it('should update the label', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let flow = 5;
+        let capacity = 10;
+        let a = arc.create(v1, v2, capacity);
+
+        a.setFlow(flow);
+
+        expect(a.label).to.equal(flow + "/" + capacity);
       });
 
     });
