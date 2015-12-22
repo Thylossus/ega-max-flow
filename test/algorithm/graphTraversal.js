@@ -44,6 +44,30 @@ describe('Graph Traversal', () => {
       expect(traverse.next).to.be.a('function');
     });
 
+    it('the returned generator should provide an output object', () => {
+      let graph = generator.create(10, 100).run();
+      let q = queue.create();
+      let traverse = graphTraversal.init(graph, q);
+      let output = traverse.next().value;
+
+      expect(output).to.have.property('aborescence').that.is.an('object');
+      expect(output).to.have.property('lexicographical').that.is.an('array');
+      expect(output).to.have.property('parenthetical').that.is.an('array');
+    });
+
+  });
+
+  describe('#run', () => {
+    it('tshould provide an output object', () => {
+      let graph = generator.create(10, 100).run();
+      let q = queue.create();
+      let traverse = graphTraversal.init(graph, q);
+      let output = graphTraversal.run(traverse);
+
+      expect(output).to.have.property('aborescence').that.is.an('object');
+      expect(output).to.have.property('lexicographical').that.is.an('array');
+      expect(output).to.have.property('parenthetical').that.is.an('array');
+    });
   });
 
 });

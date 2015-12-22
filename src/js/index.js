@@ -27,4 +27,20 @@ const graphSettings = egamaxflow.graphSettings;
     }
   });
 
+  let stack = egamaxflow.algorithm.stack.create();
+  let traverse = egamaxflow.algorithm.graphTraversal.init(graph, stack);
+  let dfsoutput = egamaxflow.algorithm.graphTraversal.run(traverse);
+
+  console.log('lexicographical', dfsoutput.lexicographical.map((vertex) => {return vertex.id;}));
+  console.log('parenthetical', dfsoutput.parenthetical.map((vertex) => {return vertex.id;}));
+
+  graph.reset();
+
+  let queue = egamaxflow.algorithm.queue.create();
+  traverse = egamaxflow.algorithm.graphTraversal.init(graph, queue);
+  let bfsoutput = egamaxflow.algorithm.graphTraversal.run(traverse);
+
+  console.log('lexicographical', bfsoutput.lexicographical.map((vertex) => {return vertex.id;}));
+  console.log('parenthetical', bfsoutput.parenthetical.map((vertex) => {return vertex.id;}));
+
 })();

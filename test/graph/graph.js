@@ -19,6 +19,8 @@ describe('Graph', () => {
         expect(g).to.be.an('object');
         expect(g).to.have.property('vertices').that.is.an.instanceof(Array);
         expect(g).to.have.property('arcs').that.is.an.instanceof(Array);
+        expect(g).to.have.property('source').that.is.null;
+        expect(g).to.have.property('sink').that.is.null;
         expect(g.vertices).to.be.empty;
         expect(g.arcs).to.be.empty;
 

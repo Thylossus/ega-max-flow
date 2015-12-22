@@ -85,6 +85,11 @@ describe('Generator', () => {
         let gen = generator.create(numberOfVertices, maxCapacity);
         let graph = gen.run();
 
+        expect(graph).to.have.property('source').that.is.an('object');
+        expect(graph).to.have.property('sink').that.is.an('object');
+        expect(graph.source.type).to.be.equal(graphConfig.VERTEX_TYPE.SOURCE);
+        expect(graph.sink.type).to.be.equal(graphConfig.VERTEX_TYPE.SINK);
+
         for (var i = 0; i < graph.vertices.length; i++) {
           if (i !== 0 && i !== graph.vertices.length - 1) {
             expect(graph.vertices[i].type).to.be.equal(graphConfig.VERTEX_TYPE.OTHER);

@@ -106,6 +106,22 @@ describe('Vertex', () => {
 
     });
 
+    describe('#nextArc', () => {
+
+      it('should return an arc if there is a next arc', () => {
+        let v = vertex.create();
+        v.outgoingArcs = [1, 2, 3];
+
+        expect(v.nextArc()).to.be.equal(v.outgoingArcs[0]);
+      });
+
+      it('should return null if there is no next arc', () => {
+        let v = vertex.create();
+        expect(v.nextArc()).to.be.null;
+      });
+
+    });
+
   });
 
 });

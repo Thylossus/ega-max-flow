@@ -90,7 +90,14 @@ const sigmaConfig = require('../../../config/sigma');
         a.from.outgoingArcs.push(a);
       });
 
-      return graph.create(vertices, arcs);
+      // Create graph
+      let g = graph.create(vertices, arcs);
+
+      // Set source and sink of the graph
+      g.source = source;
+      g.sink = sink;
+
+      return g;
     }
   }
 

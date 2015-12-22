@@ -38,6 +38,11 @@ const sigmaConfig = require('../../../config/sigma');
 
       return this;
     }
+
+    nextArc() {
+      this.currentArcIndex += 1;
+      return this.outgoingArcs[this.currentArcIndex] || null;
+    }
   }
 
   exports.create = (x, y) => {

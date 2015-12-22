@@ -5,6 +5,8 @@
     constructor(vertices, arcs) {
       this.vertices = vertices || [];
       this.arcs = arcs || [];
+      this.source = null;
+      this.sink = null;
     }
 
     getFlow() {
