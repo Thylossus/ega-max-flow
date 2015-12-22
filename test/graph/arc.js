@@ -100,6 +100,38 @@ describe('Arc', () => {
       });
 
     });
+
+    describe('#setCapacity', () => {
+
+      it('should update capacity', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 10);
+
+        a.setCapacity(11);
+
+        expect(a.capacity).to.equal(11);
+      });
+
+      it('should return the arc object', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 10);
+
+        expect(a.setCapacity(11)).to.equal(a);
+      });
+
+      it('should update the label', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 10);
+
+        a.setCapacity(11);
+
+        expect(a.label).to.match(/\/11/);
+      });
+
+    });
   });
 
 });

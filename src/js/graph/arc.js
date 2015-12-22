@@ -32,6 +32,13 @@ const sigmaConfig = require('../../../config/sigma');
     compare(other) {
       return this.distance - other.distance;
     }
+
+    setCapacity(capacity) {
+      this.capacity = capacity;
+      this.label = '0/' + this.capacity;
+
+      return this;
+    }
   }
 
   exports.create = (from, to, capacity) => {

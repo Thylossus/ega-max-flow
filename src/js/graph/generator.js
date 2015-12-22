@@ -6,6 +6,7 @@ const graph = require('./graph');
 const calculation = require('../util/calculation');
 const square = require('../util/square');
 const graphConfig = require('../../../config/graph');
+const sigmaConfig = require('../../../config/sigma');
 
 (function () {
   'use strict';
@@ -19,6 +20,8 @@ const graphConfig = require('../../../config/graph');
     run() {
       let separatedGrid = square.separate(graphConfig.GRID_SIZE, this.numberOfVertices);
       let quadrants = separatedGrid.quadrants.slice(0, this.numberOfVertices);
+      let source;
+      let sink;
 
       let vertices = quadrants.map((quadrant) => {
         let x = graphConfig.VERTICES_ORDERED ? quadrant.x1 : random(quadrant.x1, quadrant.x2);
@@ -27,8 +30,12 @@ const graphConfig = require('../../../config/graph');
 
         if (quadrant.id === 0) {
           v.type = graphConfig.VERTEX_TYPE.SOURCE;
+          v.color = sigmaConfig.SOURCE_COLOR;
+          source = v;
         } else if (quadrant.id === this.numberOfVertices - 1) {
           v.type = graphConfig.VERTEX_TYPE.SINK;
+          v.color = sigmaConfig.SINK_COLOR;
+          sink = v;
         }
 
         return v;
@@ -69,6 +76,12 @@ const graphConfig = require('../../../config/graph');
       let maxUsedCapacity = arcs.reduce((max, arc) => {
         return Math.max(max, arc.capacity);
       }, 0);
+
+      arcs.forEach((a) => {
+        if (a.from.equals(source) || a.to.equals(source) || a.from.equals(sink) || a.to.equals(sink)) {
+          a.setCapacity(Math.min(maxUsedCapacity + 1, this.maxCapacity));
+        }
+      });
 
       return graph.create(vertices, arcs);
     }

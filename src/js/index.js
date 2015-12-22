@@ -1,11 +1,12 @@
 const generator = egamaxflow.graph.generator;
 const sigmaSettings = egamaxflow.sigmaSettings;
+const graphSettings = egamaxflow.graphSettings;
 
 (function () {
   'use strict';
 
 
-  let graph = generator.create(10, 100).run();
+  let graph = generator.create(graphSettings.NUMBER_OF_VERTICES, graphSettings.MAX_CAPACITY).run();
   graph.nodes = graph.vertices;
   graph.edges = graph.arcs;
 
