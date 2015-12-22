@@ -48,4 +48,6 @@
   exports.create = () => {
     return new Stack();
   };
+
+  exports.Stack = Stack;
 }());

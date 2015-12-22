@@ -67,4 +67,6 @@
   exports.create = () => {
     return new Queue();
   };
+
+  exports.Queue = Queue;
 }());
