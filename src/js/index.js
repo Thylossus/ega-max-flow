@@ -9,7 +9,7 @@ const sigmaSettings = egamaxflow.sigmaSettings;
   graph.nodes = graph.vertices;
   graph.edges = graph.arcs;
 
-  console.log(graph); 
+  console.log(graph);
 
   let s = new sigma({
     graph: graph,
@@ -18,10 +18,11 @@ const sigmaSettings = egamaxflow.sigmaSettings;
       type: 'canvas'
     },
     settings: {
-      edgeLabelSize: 'proportional',
+      edgeLabelSize: 'fixed',
+      defaultEdgeLabelSize: sigmaSettings.EDGE_LABEL_SIZE,
       defaultEdgeType: sigmaSettings.EDGE_TYPE,
       defaultEdgeColor: sigmaSettings.EDGE_COLOR,
-      drawEdgeLabels: true
+      drawEdgeLabels: sigmaSettings.EDGE_DISPLAY_LABELS
     }
   });
 

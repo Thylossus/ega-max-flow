@@ -99,9 +99,6 @@
 
     orthDirection.factor = 0.4 * tSize;
 
-    if (source.label === 'v1') {
-      console.log(source, target);
-    }
     context.fillStyle = color;
     context.beginPath();
     context.moveTo(arrowEnd.x, arrowEnd.y);

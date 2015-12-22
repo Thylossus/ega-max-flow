@@ -34,18 +34,17 @@ const graphConfig = require('../../../config/graph');
         return v;
       });
 
-      let arcs = vertices.map((v1) => {
-        return vertices.map((v2) => {
+      let arcs = vertices.map((v1, idx) => {
+        // Only add forward arcs
+        // This reduces computational overhead for sorting and finding intersecting arcs
+        // Backwards arcs are added later
+        return vertices.slice(idx + 1).map((v2) => {
           return arc.create(v1, v2, random(this.maxCapacity));
         });
       });
       arcs = flatten(arcs)
         .sort((a1, a2) => {
           return a1.compare(a2);
-        })
-        .filter((arc) => {
-          // Remove arcs from a vertex to itself
-          return !calculation.equalPosition(arc.from, arc.to);
         });
 
       // Remove intersecting arcs
@@ -59,6 +58,11 @@ const graphConfig = require('../../../config/graph');
             return !calculation.intersect(arc, other);
           });
         });
+
+      // Add backwards arcs
+      arcs = arcs.concat(arcs.map((a) => {
+        return arc.create(a.to, a.from, random(this.maxCapacity));
+      }));
 
       // Adjust capacities for arcs that are connected to the source or the sink.
       // These arcs must not belong to a minimum cut.
