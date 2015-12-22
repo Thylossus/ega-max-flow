@@ -5,6 +5,15 @@
     <style type="text/css">
       body {
         margin: 0;
+        font-family: sans-serif;
+      }
+      #header {
+        border-bottom: 2px solid #555;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-left: 10px;
+        margin-right: 10px;
       }
       #container {
         position: absolute;
@@ -14,6 +23,18 @@
     </style>
   </head>
   <body>
+    <div id="header">
+      <h1>EGA - Max-Flow Problem</h1>
+      <div>
+        <label for="algorithm">Algorithm</label>
+        <select name="algorithm" id="algorithm">
+          <option value="1">Ford-Fulkerson</option>
+          <option value="2">Edmonds-Karp</option>
+          <option value="3">Dinic</option>
+          <option value="4">Preflow-Push</option>
+        </select>
+      </div>
+    </div>
     <div id="container"></div>
     <script src="./sigma.js"></script>
     <script src="./plugins/settings.js"></script>
