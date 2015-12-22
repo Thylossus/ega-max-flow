@@ -66,6 +66,18 @@ describe('Generator', () => {
         expect(eachArcHasABackwardsArc).to.be.true;
       });
 
+      it('the returned graph should have a list of outgoing arcs at each vertex', () => {
+        let numberOfVertices = 10;
+        let maxCapacity = 100;
+
+        let gen = generator.create(numberOfVertices, maxCapacity);
+        let graph = gen.run();
+
+        graph.arcs.forEach((arc) => {
+          expect(arc.from.outgoingArcs).to.include(arc);
+        });
+      });
+
       it('the returned graph should have a source and a sink', () => {
         let numberOfVertices = 10;
         let maxCapacity = 100;

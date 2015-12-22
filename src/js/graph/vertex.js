@@ -21,6 +21,8 @@ const sigmaConfig = require('../../../config/sigma');
       this.color = sigmaConfig.NODE_COLOR;
       this.label = this.id;
       this.type = graphConfig.VERTEX_TYPE.OTHER;
+      this.outgoingArcs = [];
+      this.currentArcIndex = 0;
     }
 
     equals(other) {
