@@ -28,6 +28,7 @@ describe('Arc', () => {
         expect(a).to.have.property('source').that.is.a('string');
         expect(a).to.have.property('target').that.is.a('string');
         expect(a).to.have.property('capacity').that.is.a('number');
+        expect(a).to.have.property('initCapacity').that.is.a('number');
         expect(a).to.have.property('flow').that.is.a('number');
         expect(a).to.have.property('label').that.is.an('string');
         expect(a).to.have.property('distance').that.is.a('number');
@@ -39,6 +40,7 @@ describe('Arc', () => {
         expect(a.source).to.equal(from.id);
         expect(a.target).to.equal(to.id);
         expect(a.capacity).to.equal(capacity);
+        expect(a.initCapacity).to.equal(capacity);
         expect(a.flow).to.equal(0);
         expect(a.label).to.equal(a.flow + '/' + capacity);
         expect(a.type).to.equal(sigmaConfig.EDGE_TYPE);
@@ -117,6 +119,16 @@ describe('Arc', () => {
         expect(a.capacity).to.equal(11);
       });
 
+      it('must not change the initial capacity', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 10);
+
+        a.setCapacity(11);
+
+        expect(a.initCapacity).to.equal(10);
+      });
+
       it('should return the arc object', () => {
         let v1 = vertex.create();
         let v2 = vertex.create();
@@ -178,6 +190,16 @@ describe('Arc', () => {
         a.setFlow(flow);
 
         expect(a.label).to.equal(flow + "/" + capacity);
+      });
+
+      it('must not change the initial capacity', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 10);
+
+        a.setFlow(5);
+
+        expect(a.initCapacity).to.equal(10);
       });
 
     });

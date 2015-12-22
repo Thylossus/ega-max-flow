@@ -19,6 +19,7 @@ const sigmaConfig = require('../../../config/sigma');
       this.source = from.id;
       this.target = to.id;
       this.capacity = capacity;
+      this.initCapacity = capacity;
       this.flow = 0;
       this.distance = calculation.euclidianDistance(from, to);
       this.label = this.flow + '/' + this.capacity;
