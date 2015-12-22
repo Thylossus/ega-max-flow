@@ -203,6 +203,37 @@ describe('Arc', () => {
       });
 
     });
+
+    describe('#reset', () => {
+
+      it('should return the arc', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 10);
+        expect(a.reset()).to.be.equal(a);
+      });
+
+      it('should reset the capacity', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let initCapacity = 10;
+        let a = arc.create(v1, v2, initCapacity);
+        a.setCapacity(15)
+
+        expect(a.reset().capacity).to.be.equal(initCapacity);
+        expect(a.reset().capacity).to.be.equal(a.initCapacity);
+      });
+
+      it('should reset the flow', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 10);
+        a.setFlow(5)
+
+        expect(a.reset().flow).to.be.equal(0);
+      });
+
+    });
   });
 
 });

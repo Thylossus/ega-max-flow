@@ -15,12 +15,9 @@
     }
 
     reset() {
-      this.arcs.map((arc) => {
-        arc.capacity = arc.initCapacity;
-        arc.flow = 0;
+      this.arcs.map((arc) => {return arc.reset();});
 
-        return arc;
-      });
+      this.vertices.map((vertex) => {return vertex.reset();});
 
       return this;
     }

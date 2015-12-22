@@ -22,11 +22,21 @@ const sigmaConfig = require('../../../config/sigma');
       this.label = this.id;
       this.type = graphConfig.VERTEX_TYPE.OTHER;
       this.outgoingArcs = [];
-      this.currentArcIndex = 0;
+      this.currentArcIndex = -1;
+      this.seen = false;
+      this.finished = false;
     }
 
     equals(other) {
       return this.id === other.id;
+    }
+
+    reset() {
+      this.currentArcIndex = -1;
+      this.seen = false;
+      this.finished = false;
+
+      return this;
     }
   }
 

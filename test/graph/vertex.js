@@ -25,6 +25,8 @@ describe('Vertex', () => {
         expect(v).to.have.property('type').that.is.a('number');
         expect(v).to.have.property('outgoingArcs').that.is.an('array');
         expect(v).to.have.property('currentArcIndex').that.is.a('number');
+        expect(v).to.have.property('seen').that.is.a('boolean');
+        expect(v).to.have.property('finished').that.is.a('boolean');
 
         expect(v.x).to.be.below(graphConfig.GRID_SIZE + 1);
         expect(v.y).to.be.below(graphConfig.GRID_SIZE +1);
@@ -33,7 +35,9 @@ describe('Vertex', () => {
         expect(v.label).to.be.equal(v.id);
         expect(v.type).to.be.equal(graphConfig.VERTEX_TYPE.OTHER);
         expect(v.outgoingArcs).to.be.empty;
-        expect(v.currentArcIndex).to.be.equal(0);
+        expect(v.currentArcIndex).to.be.equal(-1);
+        expect(v.seen).to.be.false;
+        expect(v.finished).to.be.false;
 
       });
 
@@ -68,6 +72,36 @@ describe('Vertex', () => {
         let result = v1.equals(v2);
 
         expect(result).to.be.false;
+      });
+
+    });
+
+    describe('#reset', () => {
+
+      it('should return the vertex', () => {
+        let v = vertex.create();
+        expect(v.reset()).to.be.equal(v);
+      });
+
+      it('should reset the currentArcIndex', () => {
+        let v = vertex.create();
+        v.currentArcIndex = 1;
+
+        expect(v.reset().currentArcIndex).to.be.equal(-1);
+      });
+
+      it('should reset the seen', () => {
+        let v = vertex.create();
+        v.seen = true;
+
+        expect(v.reset().seen).to.be.false;
+      });
+
+      it('should reset the finished', () => {
+        let v = vertex.create();
+        v.finished = true;
+
+        expect(v.reset().finished).to.be.false;
       });
 
     });

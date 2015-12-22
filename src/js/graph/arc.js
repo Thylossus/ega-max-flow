@@ -52,6 +52,13 @@ const sigmaConfig = require('../../../config/sigma');
       this.label = this.flow + '/' + this.capacity;
       return this;
     }
+
+    reset() {
+      this.capacity = this.initCapacity;
+      this.flow = 0;
+
+      return this;
+    }
   }
 
   exports.create = (from, to, capacity) => {

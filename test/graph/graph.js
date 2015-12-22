@@ -6,6 +6,7 @@ const expect = chai.expect;
 const graph = require('../../src/js/graph/graph');
 const vertex = require('../../src/js/graph/vertex');
 const arc = require('../../src/js/graph/arc');
+const generator = require('../../src/js/graph/generator');
 
 describe('Graph', () => {
 
@@ -95,7 +96,7 @@ describe('Graph', () => {
 
     describe('#reset', () => {
 
-      it('should reset all flows and capacities', () => {
+      it('should reset all arcs', () => {
         let initCapacity = 5;
         let v1 = vertex.create();
         let v2 = vertex.create();
@@ -129,6 +130,24 @@ describe('Graph', () => {
       it('should return the graph', () => {
         let g = graph.create([], []);
         expect(g.reset()).to.equal(g);
+      });
+
+      it('should reset all vertices', () => {
+        let g = generator.create(10, 100).run();
+
+        g.vertices.forEach((vertex) => {
+            vertex.currentArcIndex = 1;
+            vertex.seen = true;
+            vertex.finished = true;
+        });
+
+        g.reset();
+
+        g.vertices.forEach((vertex) => {
+          expect(vertex.currentArcIndex).to.be.equal(-1);
+          expect(vertex.seen).to.be.false;
+          expect(vertex.finished).to.be.false;
+        });
       });
 
     });
