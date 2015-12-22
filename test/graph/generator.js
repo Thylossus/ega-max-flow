@@ -59,7 +59,7 @@ describe('Generator', () => {
 
         let eachArcHasABackwardsArc = graph.arcs.every((a1) => {
           return graph.arcs.some((a2) => {
-            return a1.from.equals(a2.to) && a1.to.equals(a2.from);
+            return a1.from.equals(a2.to) && a1.to.equals(a2.from) && a1.reverse.equals(a2) && a2.reverse.equals(a1);
           });
         });
 

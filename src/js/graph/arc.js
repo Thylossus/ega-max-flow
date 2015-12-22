@@ -24,6 +24,7 @@ const sigmaConfig = require('../../../config/sigma');
       this.label = this.flow + '/' + this.capacity;
       this.type = sigmaConfig.EDGE_TYPE;
       this.color = sigmaConfig.EDGE_COLOR;
+      this.reverse = null;
     }
 
     equals(other) {

@@ -33,6 +33,7 @@ describe('Arc', () => {
         expect(a).to.have.property('distance').that.is.a('number');
         expect(a).to.have.property('type').that.is.a('string');
         expect(a).to.have.property('color').that.is.a('string');
+        expect(a).to.have.property('reverse');
         expect(a.from).to.equal(from);
         expect(a.to).to.equal(to);
         expect(a.source).to.equal(from.id);
@@ -42,6 +43,7 @@ describe('Arc', () => {
         expect(a.label).to.equal(a.flow + '/' + capacity);
         expect(a.type).to.equal(sigmaConfig.EDGE_TYPE);
         expect(a.color).to.equal(sigmaConfig.EDGE_COLOR);
+        expect(a.reverse).to.be.null;
 
       });
 

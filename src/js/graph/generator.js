@@ -68,7 +68,10 @@ const sigmaConfig = require('../../../config/sigma');
 
       // Add backwards arcs
       arcs = arcs.concat(arcs.map((a) => {
-        return arc.create(a.to, a.from, random(this.maxCapacity));
+        let reverse = arc.create(a.to, a.from, random(this.maxCapacity))
+        a.reverse = reverse;
+        reverse.reverse = a;
+        return reverse;
       }));
 
       // Adjust capacities for arcs that are connected to the source or the sink.
