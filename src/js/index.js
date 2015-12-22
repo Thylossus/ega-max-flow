@@ -1,4 +1,5 @@
 const generator = egamaxflow.graph.generator;
+const sigmaSettings = egamaxflow.sigmaSettings;
 
 (function () {
   'use strict';
@@ -8,6 +9,7 @@ const generator = egamaxflow.graph.generator;
   graph.nodes = graph.vertices;
   graph.edges = graph.arcs;
 
+  console.log(graph); 
 
   let s = new sigma({
     graph: graph,
@@ -16,7 +18,10 @@ const generator = egamaxflow.graph.generator;
       type: 'canvas'
     },
     settings: {
-      edgeLabelSize: 'proportional'
+      edgeLabelSize: 'proportional',
+      defaultEdgeType: sigmaSettings.EDGE_TYPE,
+      defaultEdgeColor: sigmaSettings.EDGE_COLOR,
+      drawEdgeLabels: true
     }
   });
 

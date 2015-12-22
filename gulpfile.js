@@ -28,5 +28,5 @@ gulp.task('copy', function () {
 });
 
 gulp.task('default', ['copy', 'webpack'], function () {
-  gulp.watch(['./src/**/*.js', './src/index.html', './config/**/*.json', './index.js'], ['copy', 'webpack']);
+  gulp.watch(['./src/**/*.js', './src/index.html', './config/**/*.json', './index.js', './libs/**/*.js'], ['copy', 'webpack']);
 });
