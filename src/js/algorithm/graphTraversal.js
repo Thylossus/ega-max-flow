@@ -43,7 +43,7 @@ const stack = require('./stack');
         v.finished = true;
         store.pop();
         output.parenthetical.push(v);
-      } else if (!a.to.seen) {
+      } else if (!a.to.seen && a.capacity > 0) {
         a.to.seen = true;
         store.push(a.to);
         output.minCapacity = Math.min(output.minCapacity, a.capacity);
@@ -70,9 +70,6 @@ const stack = require('./stack');
 
   // TODO:
   //  1. stop traversal it sink is reached
-  //  2. verify if bfs works correctly
-  //  3. allow currying of search with the store (e.g. provide queue to make graph traversal a bfs)
-  //  4. include check for saturation
 
   exports.run = (traverse) => {
     let output = null;
