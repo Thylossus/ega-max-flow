@@ -185,6 +185,56 @@ describe('Graph Traversal', () => {
       expect(output.lexicographical).not.to.include(sink);
       expect(output.parenthetical).not.to.include(sink);
     });
+
+    it('should accept a termination vertex', () => {
+      let g = generator.create(10, 100).run();
+      let q = queue.create();
+      let traverse = graphTraversal.init(q, g);
+      let output = graphTraversal.run(traverse, g.sink);
+
+      expect(output).to.have.property('aborescence').that.is.an('object');
+      expect(output).to.have.property('lexicographical').that.is.an('array');
+      expect(output).to.have.property('parenthetical').that.is.an('array');
+      expect(output).to.have.property('minCapacity').that.is.an('number');
+    });
+
+    it('should have the termination vertex as the last vertex in the lexicographical output', () => {
+      let g = generator.create(10, 100).run();
+      let q = queue.create();
+      let traverse = graphTraversal.init(q, g);
+      let output = graphTraversal.run(traverse, g.sink);
+
+      expect(output.lexicographical[output.lexicographical.length - 1]).to.equal(g.sink);
+    });
+
+    it('should terminate early', () => {
+      let v1 = vertex.create();
+      let v2 = vertex.create();
+      let v3 = vertex.create();
+      let a1 = arc.create(v1, v2, 1);
+      let a2 = arc.create(v2, v3, 1);
+      let a3 = arc.create(v3, v2, 1);
+      let a4 = arc.create(v2, v1, 1);
+
+      v1.outgoingArcs = [a1];
+      v2.outgoingArcs = [a2, a4];
+      v3.outgoingArcs = [a3];
+
+      let vertices = [v1, v2, v3];
+      let arcs = [a1, a2, a3, a4];
+
+      let g = graph.create(vertices, arcs);
+      g.source = v1;
+      g.sink = v3;
+
+      let s = stack.create();
+      let traverse = graphTraversal.init(s, g);
+      let output = graphTraversal.run(traverse, v2);
+
+      expect(output.lexicographical).to.include(v1);
+      expect(output.lexicographical).to.include(v2);
+      expect(output.lexicographical).not.to.include(v3);
+    });
   });
 
 });

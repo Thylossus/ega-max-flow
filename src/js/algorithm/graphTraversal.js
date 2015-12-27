@@ -68,16 +68,23 @@ const stack = require('./stack');
 
   exports.init = curry(init);
 
-  // TODO:
-  //  1. stop traversal it sink is reached
-
-  exports.run = (traverse) => {
+  exports.run = (traverse, termination) => {
     let output = null;
     let result = traverse.next();
+    let last;
 
     while (!result.done) {
       output = result.value;
-      result = traverse.next();
+      last = output.lexicographical[output.lexicographical.length - 1];
+
+      // Check if the currently last visited vertex is the termination vertex
+      if (termination && last && last.equals(termination)) {
+        // Terminate
+        result.done = true;
+      } else {
+        result = traverse.next();
+      }
+
     }
 
     return output;
