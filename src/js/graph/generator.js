@@ -84,6 +84,7 @@ const sigmaConfig = require('../../../config/sigma');
         // Update capacity
         if (a.from.equals(source) || a.to.equals(source) || a.from.equals(sink) || a.to.equals(sink)) {
           a.setCapacity(Math.min(maxUsedCapacity + 1, this.maxCapacity));
+          a.initCapacity = Math.min(maxUsedCapacity + 1, this.maxCapacity);
         }
 
         // Add to outgoing arcs

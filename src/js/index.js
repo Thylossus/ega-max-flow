@@ -36,7 +36,9 @@ const graphSettings = egamaxflow.graphSettings;
   let traverse = dfs(graph);
   let output = egamaxflow.algorithm.graphTraversal.run(traverse);
 
+  console.log('-------------------- DFS --------------------------');
   console.log('lexicographical', output.lexicographical.map((vertex) => {return vertex.id;}));
+  console.log('arcs', output.arcs.map((arc) => {return arc.id + '(' + arc.from.id + ' -> ' + arc.to.id + ')';}));
   console.log('parenthetical', output.parenthetical.map((vertex) => {return vertex.id;}));
 
   graph.reset();
@@ -44,34 +46,26 @@ const graphSettings = egamaxflow.graphSettings;
   traverse = egamaxflow.algorithm.graphTraversal.init(queue, graph);
   output = egamaxflow.algorithm.graphTraversal.run(traverse);
 
+  console.log('-------------------- BFS --------------------------');
   console.log('lexicographical', output.lexicographical.map((vertex) => {return vertex.id;}));
+  console.log('arcs', output.arcs.map((arc) => {return arc.id + '(' + arc.from.id + ' -> ' + arc.to.id + ')';}));
   console.log('parenthetical', output.parenthetical.map((vertex) => {return vertex.id;}));
 
+  graph.reset();
 
-  let v1 = egamaxflow.graph.vertex.create();
-  let v2 = egamaxflow.graph.vertex.create();
-  let v3 = egamaxflow.graph.vertex.create();
-  let a1 = egamaxflow.graph.arc.create(v1, v2, 1);
-  let a2 = egamaxflow.graph.arc.create(v2, v3, 1);
-  let a3 = egamaxflow.graph.arc.create(v3, v2, 1);
-  let a4 = egamaxflow.graph.arc.create(v2, v1, 1);
+  console.log('--------------- Ford Fulkerson --------------------');
 
-  v1.outgoingArcs = [a1];
-  v2.outgoingArcs = [a2, a4];
-  v3.outgoingArcs = [a3];
 
-  let vertices = [v1, v2, v3];
-  let arcs = [a1, a2, a3, a4];
+  let iterator = egamaxflow.algorithm.fordFulkerson.init(graph);
+  output = null;
+  let result = iterator.next();
 
-  let g = egamaxflow.graph.graph.create(vertices, arcs);
-  g.source = v1;
-  g.sink = v3;
-
-  stack = egamaxflow.algorithm.stack.create();
-  traverse = egamaxflow.algorithm.graphTraversal.init(stack, g);
-  output = egamaxflow.algorithm.graphTraversal.run(traverse);
-
-  console.log('lexicographical', output.lexicographical.map((vertex) => {return vertex.id;}));
-  console.log('parenthetical', output.parenthetical.map((vertex) => {return vertex.id;}));
+  for (let i = 0; i < 20 && !result.done; i++) {
+    output = result.value;
+    result = iterator.next();
+    console.log(output);
+    console.log('augmenting path', output.flowAugmentingPath.map((arc) => {return arc.id + '(' + arc.from.id + ' -> ' + arc.to.id + ')';}));
+    console.log('flow', Object.keys(output.flow).reduce((flow, key) => {flow[key.id] = output.flow[key]; return flow;}, {}));
+  }
 
 })();

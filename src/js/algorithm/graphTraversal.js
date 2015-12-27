@@ -17,7 +17,9 @@ const stack = require('./stack');
       lexicographical: [],
       // Parenthetical order
       parenthetical: [],
-      minCapacity: 0
+      // Arcs in lexicographical order
+      arcs: [],
+      minCapacity: Infinity
     }
     // Set of vertices
     let V = graph.vertices;
@@ -50,6 +52,7 @@ const stack = require('./stack');
         output.aborescence.Aprime.push(a);
         output.aborescence.Vprime.push(a.to);
         output.lexicographical.push(a.to);
+        output.arcs.push(a);
       }
 
       yield output;

@@ -1,6 +1,7 @@
 const queue = require('./queue');
 const stack = require('./stack');
 const graphTraversal = require('./graphTraversal');
+const fordFulkerson = require('./fordFulkerson');
 
 (function () {
   'use strict';
@@ -8,4 +9,5 @@ const graphTraversal = require('./graphTraversal');
   exports.queue = queue;
   exports.stack = stack;
   exports.graphTraversal = graphTraversal;
+  exports.fordFulkerson = fordFulkerson;
 })();

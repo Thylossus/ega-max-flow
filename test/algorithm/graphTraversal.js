@@ -66,6 +66,7 @@ describe('Graph Traversal', () => {
       expect(output).to.have.property('aborescence').that.is.an('object');
       expect(output).to.have.property('lexicographical').that.is.an('array');
       expect(output).to.have.property('parenthetical').that.is.an('array');
+      expect(output).to.have.property('arcs').that.is.an('array');
       expect(output).to.have.property('minCapacity').that.is.an('number');
     });
 
@@ -81,6 +82,7 @@ describe('Graph Traversal', () => {
       expect(output).to.have.property('aborescence').that.is.an('object');
       expect(output).to.have.property('lexicographical').that.is.an('array');
       expect(output).to.have.property('parenthetical').that.is.an('array');
+      expect(output).to.have.property('arcs').that.is.an('array');
       expect(output).to.have.property('minCapacity').that.is.an('number');
     });
 
@@ -148,6 +150,44 @@ describe('Graph Traversal', () => {
       expect(output.parenthetical).to.include(v3);
     });
 
+    it('should return the correct minimum capacity', () => {
+      let minCapacity = 1;
+      let source = vertex.create();
+      let v1 = vertex.create();
+      let v2 = vertex.create();
+      let v3 = vertex.create();
+      let sink = vertex.create();
+      let a1 = arc.create(source, v1, minCapacity);
+      let a2 = arc.create(v1, v2, minCapacity);
+      let a3 = arc.create(v1, v3, minCapacity);
+      let a4 = arc.create(v2, sink, minCapacity);
+      let a5 = arc.create(v3, sink, minCapacity);
+      let a6 = arc.create(sink, v3, minCapacity);
+      let a7 = arc.create(sink, v2, minCapacity);
+      let a8 = arc.create(v3, v1, minCapacity);
+      let a9 = arc.create(v2, v1, minCapacity);
+      let a10 = arc.create(v1, source, minCapacity);
+
+      source.outgoingArcs = [a1];
+      v1.outgoingArcs = [a2, a3];
+      v2.outgoingArcs = [a4, a9];
+      v3.outgoingArcs = [a5, a8];
+      sink.outgoingArcs = [a6, a7];
+
+      let vertices = [source, v1, v2, v3, sink];
+      let arcs = [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10];
+
+      let g = graph.create(vertices, arcs);
+      g.source = source;
+      g.sink = sink;
+
+      let q = queue.create();
+      let traverse = graphTraversal.init(q, g);
+      let output = graphTraversal.run(traverse);
+
+      expect(output.minCapacity).to.equal(minCapacity);
+    });
+
     it('should ignore arcs with no capacity', () => {
       let source = vertex.create();
       let v1 = vertex.create();
@@ -205,6 +245,7 @@ describe('Graph Traversal', () => {
       let output = graphTraversal.run(traverse, g.sink);
 
       expect(output.lexicographical[output.lexicographical.length - 1]).to.equal(g.sink);
+      expect(output.arcs[output.arcs.length - 1].to).to.equal(g.sink);
     });
 
     it('should terminate early', () => {
