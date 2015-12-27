@@ -1,10 +1,11 @@
+const curry = require('lodash/function/curry');
 const queue = require('./queue');
 const stack = require('./stack');
 
 (function() {
   'use strict';
 
-  function* traverse(graph, store) {
+  function* traverse(store, graph) {
     // Output
     let output = {
       // Aborescence
@@ -15,7 +16,8 @@ const stack = require('./stack');
       // Lexicographical order
       lexicographical: [],
       // Parenthetical order
-      parenthetical: []
+      parenthetical: [],
+      minCapacity: 0
     }
     // Set of vertices
     let V = graph.vertices;
@@ -44,6 +46,7 @@ const stack = require('./stack');
       } else if (!a.to.seen) {
         a.to.seen = true;
         store.push(a.to);
+        output.minCapacity = Math.min(output.minCapacity, a.capacity);
         output.aborescence.Aprime.push(a);
         output.aborescence.Vprime.push(a.to);
         output.lexicographical.push(a.to);
@@ -55,13 +58,21 @@ const stack = require('./stack');
     return null;
   }
 
-  exports.init = (graph, store) => {
+  function init(store, graph) {
     if (!(store instanceof queue.Queue) && !(store instanceof stack.Stack)) {
       throw new Error('Unsupported data structure. Please provide queue or stack');
     }
 
-    return traverse(graph, store);
-  };
+    return traverse(store, graph);
+  }
+
+  exports.init = curry(init);
+
+  // TODO:
+  //  1. stop traversal it sink is reached
+  //  2. verify if bfs works correctly
+  //  3. allow currying of search with the store (e.g. provide queue to make graph traversal a bfs)
+  //  4. include check for saturation
 
   exports.run = (traverse) => {
     let output = null;
