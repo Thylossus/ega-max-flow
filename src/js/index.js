@@ -1,14 +1,28 @@
-const generator = egamaxflow.graph.generator;
-const sigmaSettings = egamaxflow.sigmaSettings;
-const graphSettings = egamaxflow.graphSettings;
-
-(function () {
+$(document).ready(() => {
   'use strict';
+  const generator = egamaxflow.graph.generator;
+  const sigmaSettings = egamaxflow.sigmaSettings;
+  const graphSettings = egamaxflow.graphSettings;
+  const algorithms = {
+    1: egamaxflow.algorithm.fordFulkerson,
+    2: null,
+    3: null,
+    4: null
+  };
+  const algorithmNames = {
+    1: 'Ford-Fulkerson',
+    2: 'Edmonds-Karp',
+    3: 'Dinic',
+    4: 'Preflow-Push'
+  };
 
 
   let graph = generator.create(graphSettings.NUMBER_OF_VERTICES, graphSettings.MAX_CAPACITY).run();
   graph.nodes = graph.vertices;
   graph.edges = graph.arcs;
+
+  let iterator;
+  let log = [];
 
   // console.log('arcs', graph.arcs.map((arc) => {return arc.id + '(' + arc.from.id + ' -' + arc.capacity + '-> ' + arc.to.id + ')'}));
 
@@ -27,49 +41,87 @@ const graphSettings = egamaxflow.graphSettings;
     }
   });
 
-  let stack = egamaxflow.algorithm.stack.create();
-  let queue = egamaxflow.algorithm.queue.create();
+  // Create references to UI elements
+  let btnStart = $('#start');
+  let btnNext = $('#next');
+  let inputAlgorithm = $('#algorithm');
+  let lblAlgorithm = $('#labelAlgorithm');
+  let containerOutput = $('#output');
+  let outputList = $('#output > ul');
 
-  let dfs = egamaxflow.algorithm.graphTraversal.init(stack);
-  let bfs = egamaxflow.algorithm.graphTraversal.init(queue);
+  btnStart.on('click', (e) => {
+    e.preventDefault();
 
-  let traverse = dfs(graph);
-  let output = egamaxflow.algorithm.graphTraversal.run(traverse);
+    let algorithm = inputAlgorithm.val();
 
-  console.log('-------------------- DFS --------------------------');
-  console.log('lexicographical', output.lexicographical.map((vertex) => {return vertex.id;}));
-  console.log('arcs', output.arcs.map((arc) => {return arc.id + '(' + arc.from.id + ' -> ' + arc.to.id + ')';}));
-  console.log('parenthetical', output.parenthetical.map((vertex) => {return vertex.id;}));
+    if (!algorithms.hasOwnProperty(algorithm)) {
+      throw new Error('Unsupported algorithm');
+    }
 
-  graph.reset();
+    // Update UI
+    inputAlgorithm.hide();
+    lblAlgorithm.text(algorithmNames[algorithm]);
+    btnStart.hide();
+    btnNext.show();
+    containerOutput.show();
 
-  traverse = egamaxflow.algorithm.graphTraversal.init(queue, graph);
-  output = egamaxflow.algorithm.graphTraversal.run(traverse);
-
-  console.log('-------------------- BFS --------------------------');
-  console.log('lexicographical', output.lexicographical.map((vertex) => {return vertex.id;}));
-  console.log('arcs', output.arcs.map((arc) => {return arc.id + '(' + arc.from.id + ' -> ' + arc.to.id + ')';}));
-  console.log('parenthetical', output.parenthetical.map((vertex) => {return vertex.id;}));
-
-  graph.reset();
-
-  console.log('--------------- Ford Fulkerson --------------------');
-
-
-  let iterator = egamaxflow.algorithm.fordFulkerson.init(graph);
-  output = null;
-  let result = iterator.next();
-
-  for (let i = 0;  !result.done; i++) {
-    output = result.value;
-    result = iterator.next();
-    console.log(output);
-    console.log('augmenting path', output.flowAugmentingPath.map((arc) => {return arc.id + '(' + arc.from.id + ' -> ' + arc.to.id + ')';}));
-    console.log('flow', Object.keys(output.flow).reduce((flow, key) => {flow[key] = output.flow[key]; return flow;}, {}));
-
+    // Reset graph
+    graph.reset();
     s.graph.clear();
     s.graph.read(graph);
     s.refresh();
-  }
 
-})();
+    // Initialize algorithm
+    algorithm = algorithms[algorithm];
+    iterator = algorithm.init(graph);
+
+  });
+
+  btnNext.on('click', (e) => {
+    e.preventDefault();
+
+    if (!iterator) {
+      throw new Error('Iterator undefined');
+    }
+
+    let result = iterator.next();
+    let output = result.value;
+
+    // Highlight flow augmenting path
+    graph.arcs.forEach((arc) => {
+      let onPath = output.flowAugmentingPath.some((a) => {
+        return a.equals(arc);
+      });
+
+      if (onPath) {
+        arc.color = sigmaSettings.EDGE_ACTIVE_COLOR;
+      } else {
+        arc.color = sigmaSettings.EDGE_COLOR;
+      }
+    });
+
+    // Log augmenting path
+    let path = output.flowAugmentingPath[0].from.id;
+    path = output.flowAugmentingPath.reduce((p, arc) => {
+      return p + ' > ' + arc.to.id;
+    }, path);
+    log.push(path);
+
+    // Log to list
+    outputList.html('');
+    log.forEach((entry) => {
+      outputList.append('<li>' + entry + '</li>');
+    });
+
+    console.log(output);
+    if (result.done) {
+      console.log('finished');
+    }
+
+    // Redraw
+    s.graph.clear();
+    s.graph.read(graph);
+    s.refresh();
+  });
+
+});

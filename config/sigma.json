@@ -1,9 +1,10 @@
 {
   "NODE_SIZE": 2,
   "NODE_COLOR": "#666",
-  "SOURCE_COLOR": "#004E8A",
-  "SINK_COLOR": "#B90F22",
-  "EDGE_COLOR": "#ccc",
+  "SOURCE_COLOR": "#72FF00",
+  "SINK_COLOR": "#CC4214",
+  "EDGE_COLOR": "#CCC",
+  "EDGE_ACTIVE_COLOR": "#193FFF",
   "EDGE_TYPE": "parallel",
   "EDGE_LABEL_SIZE": 14,
   "EDGE_DISPLAY_LABELS": true
