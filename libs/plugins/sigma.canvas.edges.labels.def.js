@@ -92,20 +92,15 @@
       context.fillText(
         edge.label,
         0,
-        (-size / 2) - 5
+        (-size / 2) + 20
       );
     } else {
       context.fillText(
         edge.label,
         0,
-        (-size / 2) + 20
+        (-size / 2) - 8
       );
     }
-    // context.fillText(
-    //   edge.label,
-    //   0,
-    //   (-size / 2) - 3
-    // );
 
     context.restore();
   };

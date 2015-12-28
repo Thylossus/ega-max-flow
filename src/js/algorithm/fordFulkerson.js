@@ -14,8 +14,12 @@ const stack = require('./stack');
     };
     let last = result.flowAugmentingPath[result.flowAugmentingPath.length - 1];
 
-    return last.to.equals(graph.sink) ? result : null;
+    return last && last.to.equals(graph.sink) ? result : null;
   }
+
+  // TODO:
+  // 1. adjust flow and capacity calculation (either reduce capacity or change capacity check in graph traversal such that a.capacity - a.flow > 0)
+  // 2. adjust flow and capacity w.r.t. to backwards arcs (decide which system to use)
 
   function* iterator(graph) {
     let dfsResult = null;
@@ -26,12 +30,11 @@ const stack = require('./stack');
     };
 
     while (dfsResult = dfs(graph)) {
-      console.log('dfsResult', dfsResult);
       dfsResult.flowAugmentingPath.forEach((arc) => {
         // Reset vertices
         arc.to.reset();
         // Set flow
-        arc.setFlow(dfsResult.minCapacity);
+        arc.setFlow(arc.flow + dfsResult.minCapacity);
         flow[arc.id] = arc.flow;
       });
 

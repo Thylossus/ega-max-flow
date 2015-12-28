@@ -45,10 +45,10 @@ const stack = require('./stack');
         v.finished = true;
         store.pop();
         output.parenthetical.push(v);
-      } else if (!a.to.seen && a.capacity > 0) {
+      } else if (!a.to.seen && a.capacity - a.flow > 0) {
         a.to.seen = true;
         store.push(a.to);
-        output.minCapacity = Math.min(output.minCapacity, a.capacity);
+        output.minCapacity = Math.min(output.minCapacity, a.capacity - a.flow);
         output.aborescence.Aprime.push(a);
         output.aborescence.Vprime.push(a.to);
         output.lexicographical.push(a.to);
