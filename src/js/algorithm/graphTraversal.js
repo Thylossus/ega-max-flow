@@ -44,6 +44,10 @@ const stack = require('./stack');
       if (a === null) {
         v.finished = true;
         store.pop();
+
+        // Remove arc because output.arcs should only contain arcs that lead to a termination node
+        output.arcs.pop();
+        
         output.parenthetical.push(v);
       } else if (!a.to.seen && a.capacity - a.flow > 0) {
         a.to.seen = true;
