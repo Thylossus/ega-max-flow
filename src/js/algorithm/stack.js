@@ -51,10 +51,10 @@
         return 'empty';
       }
 
-      let representation = '-> ' + item.value;
+      let representation = '-> ' + (item.value.hasOwnProperty('id') ? item.value.id : item.value);
 
       while (item = item.next) {
-        representation = representation + ' > ' + item.value;
+        representation = representation + ' > ' + (item.value.hasOwnProperty('id') ? item.value.id : item.value);
       }
 
       return representation;

@@ -25,6 +25,10 @@ const sigmaConfig = require('../../../config/sigma');
       this.currentArcIndex = -1;
       this.seen = false;
       this.finished = false;
+      // These properties are required to find a path with BFS
+      this.parent = null;
+      this.parentArc = null;
+      this.parentArcMinCapacity = Infinity;
     }
 
     equals(other) {
@@ -35,6 +39,9 @@ const sigmaConfig = require('../../../config/sigma');
       this.currentArcIndex = -1;
       this.seen = false;
       this.finished = false;
+      this.parent = null;
+      this.parentArc = null;
+      this.parentArcMinCapacity = Infinity;
 
       return this;
     }

@@ -27,6 +27,9 @@ describe('Vertex', () => {
         expect(v).to.have.property('currentArcIndex').that.is.a('number');
         expect(v).to.have.property('seen').that.is.a('boolean');
         expect(v).to.have.property('finished').that.is.a('boolean');
+        expect(v).to.have.property('parent').that.is.null;
+        expect(v).to.have.property('parentArc').that.is.null;
+        expect(v).to.have.property('parentArcMinCapacity').that.is.a('number');
 
         expect(v.x).to.be.below(graphConfig.GRID_SIZE + 1);
         expect(v.y).to.be.below(graphConfig.GRID_SIZE +1);
@@ -38,6 +41,7 @@ describe('Vertex', () => {
         expect(v.currentArcIndex).to.be.equal(-1);
         expect(v.seen).to.be.false;
         expect(v.finished).to.be.false;
+        expect(v.parentArcMinCapacity).to.be.equal(Infinity);
 
       });
 
@@ -102,6 +106,19 @@ describe('Vertex', () => {
         v.finished = true;
 
         expect(v.reset().finished).to.be.false;
+      });
+
+      it('should reset the parent, parent arc, and parent arc min capacity property', () => {
+        let v = vertex.create();
+        v.parent = 1;
+        v.parentArc = 2;
+        v.parentArcMinCapacity = 3;
+
+        v.reset();
+
+        expect(v.parent).to.be.null;
+        expect(v.parentArc).to.be.null;
+        expect(v.parentArcMinCapacity).to.equal(Infinity);
       });
 
     });

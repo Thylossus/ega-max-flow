@@ -5,7 +5,7 @@ $(document).ready(() => {
   const graphSettings = egamaxflow.graphSettings;
   const algorithms = {
     1: egamaxflow.algorithm.fordFulkerson,
-    2: null,
+    2: egamaxflow.algorithm.edmondsKarp,
     3: null,
     4: null
   };
@@ -64,6 +64,10 @@ $(document).ready(() => {
     btnStart.hide();
     btnNext.show();
     containerOutput.show();
+    outputList.children('li').remove();
+
+    // Reset log
+    log = [];
 
     // Reset graph
     graph.reset();
@@ -87,37 +91,60 @@ $(document).ready(() => {
     let result = iterator.next();
     let output = result.value;
 
-    // Highlight flow augmenting path
-    graph.arcs.forEach((arc) => {
-      let onPath = output.flowAugmentingPath.some((a) => {
-        return a.equals(arc);
+    if (result.done) {
+      // Update UI
+      inputAlgorithm.show();
+      lblAlgorithm.text('Algorithm');
+      btnNext.hide();
+      btnStart.show();
+
+      // Highlight all arcs with flow > 0
+      graph.arcs.forEach((arc) => {
+        if (arc.flow > 0) {
+          arc.color = sigmaSettings.EDGE_ACTIVE_COLOR;
+        } else {
+          arc.color = sigmaSettings.EDGE_COLOR;
+        }
       });
 
-      if (onPath) {
-        arc.color = sigmaSettings.EDGE_ACTIVE_COLOR;
-      } else {
-        arc.color = sigmaSettings.EDGE_COLOR;
-      }
-    });
+      // Calculate max flow
+      let maxFlow = graph.source.outgoingArcs.reduce((sum, arc) => {
+        return sum + arc.flow;
+      }, 0);
 
-    // Log augmenting path
-    let path = output.flowAugmentingPath[0].from.id;
-    path = output.flowAugmentingPath.reduce((p, arc) => {
-      return p + ' > ' + arc.to.id;
-    }, path);
-    log.push(path);
+      outputList.append('<li>Maximum flow = ' + maxFlow + '</li>');
+      outputList.append('<li>All arcs with flow > 0 are highlighted.</li>');
+    } else {
+      // Highlight flow augmenting path
+      graph.arcs.forEach((arc) => {
+        let onPath = output.flowAugmentingPath.some((a) => {
+          return a.equals(arc);
+        });
 
-    // Log to list
-    outputList.html('');
-    log.forEach((entry) => {
-      outputList.append('<li>' + entry + '</li>');
-    });
+        if (onPath) {
+          arc.color = sigmaSettings.EDGE_ACTIVE_COLOR;
+        } else {
+          arc.color = sigmaSettings.EDGE_COLOR;
+        }
+      });
 
-    console.log(output);
-    console.log(output.flowAugmentingPath.map((arc) => {return arc.from.id + " -> " + arc.to.id}));
-    if (result.done) {
-      console.log('finished');
+      // Log augmenting path
+      let path = output.flowAugmentingPath[0].from.id;
+      path = output.flowAugmentingPath.reduce((p, arc) => {
+        return p + ' > ' + arc.to.id;
+      }, path);
+      log.push(path);
+
+      // Log to list
+      outputList.html('');
+      log.forEach((entry) => {
+        outputList.append('<li>' + entry + '</li>');
+      });
+
+      console.log(output);
+      console.log(output.flowAugmentingPath.map((arc) => {return arc.from.id + " -> " + arc.to.id}));
     }
+
 
     // Redraw
     s.graph.clear();

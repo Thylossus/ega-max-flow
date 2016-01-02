@@ -26,17 +26,16 @@ const stack = require('./stack');
     };
 
     while (dfsResult = dfs(graph)) {
-      console.log(dfsResult.minCapacity);
       dfsResult.flowAugmentingPath.forEach((arc) => {
-        // Reset vertices
-        arc.to.reset();
         // Set flow
         arc.increaseFlow(dfsResult.minCapacity);
         flow[arc.id] = arc.flow;
       });
 
-      // Reset source (this is the only vertex which is not reset in the previous loop)
-      graph.source.reset();
+      // Reset vertices
+      graph.vertices.forEach((vertex) => {
+        vertex.reset();
+      });
 
       output.flowAugmentingPath = dfsResult.flowAugmentingPath;
       output.flow = flow;

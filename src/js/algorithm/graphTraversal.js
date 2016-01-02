@@ -61,6 +61,11 @@ const stack = require('./stack');
         a.to.seen = true;
         store.push(a.to);
 
+        // Set properties for finding paths with BFS
+        a.to.parent = a.from;
+        a.to.parentArc = a;
+        a.to.parentArcMinCapacity = a.from.parentArcMinCapacity === undefined ? a.capacity : Math.min(a.from.parentArcMinCapacity, a.capacity);
+
         minCapacities.push(Math.min(lastMinCapacity, a.capacity));
         lastMinCapacity = minCapacities[minCapacities.length - 1];
 
