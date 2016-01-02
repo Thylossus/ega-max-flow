@@ -114,6 +114,7 @@ $(document).ready(() => {
     });
 
     console.log(output);
+    console.log(output.flowAugmentingPath.map((arc) => {return arc.from.id + " -> " + arc.to.id}));
     if (result.done) {
       console.log('finished');
     }

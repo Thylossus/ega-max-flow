@@ -26,6 +26,11 @@ const stack = require('./stack');
     // Start vertex
     let s = graph.source;
 
+    // Minimum capacities
+    let minCapacities = [];
+    let lastMinCapacity = Infinity;
+    let overallMinCapacity = Infinity;
+
     // First element of the store
     let v;
     // Next arc
@@ -47,17 +52,27 @@ const stack = require('./stack');
 
         // Remove arc because output.arcs should only contain arcs that lead to a termination node
         output.arcs.pop();
-        
+        minCapacities.pop();
+        lastMinCapacity = minCapacities[minCapacities.length - 1];
+        lastMinCapacity = lastMinCapacity === undefined ? Infinity : lastMinCapacity;
+
         output.parenthetical.push(v);
-      } else if (!a.to.seen && a.capacity - a.flow > 0) {
+      } else if (!a.to.seen && a.capacity > 0) {
         a.to.seen = true;
         store.push(a.to);
-        output.minCapacity = Math.min(output.minCapacity, a.capacity - a.flow);
+
+        minCapacities.push(Math.min(lastMinCapacity, a.capacity));
+        lastMinCapacity = minCapacities[minCapacities.length - 1];
+
+        overallMinCapacity = Math.min(overallMinCapacity, a.capacity);
+
         output.aborescence.Aprime.push(a);
         output.aborescence.Vprime.push(a.to);
         output.lexicographical.push(a.to);
         output.arcs.push(a);
       }
+
+      output.minCapacity = lastMinCapacity === Infinity ? overallMinCapacity : lastMinCapacity;
 
       yield output;
     }

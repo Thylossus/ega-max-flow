@@ -276,6 +276,64 @@ describe('Graph Traversal', () => {
       expect(output.lexicographical).to.include(v2);
       expect(output.lexicographical).not.to.include(v3);
     });
+
+    it('should terminate early and have only the path min capacity as its output min capacity', () => {
+      let source = vertex.create();
+      source.id = 'source';
+      let sink = vertex.create();
+      sink.id = 'sink';
+      let v1 = vertex.create();
+      v1.id = 'v1';
+      let v2 = vertex.create();
+      v2.id = 'v2';
+      let v3 = vertex.create();
+      v3.id = 'v3';
+      let v4 = vertex.create();
+      v4.id = 'v4';
+      let v5 = vertex.create();
+      v5.id = 'v5';
+      let v6 = vertex.create();
+      v6.id = 'v6';
+
+      let a1 =  arc.create(source, v1,     1);
+      let a2 =  arc.create(v1,     source, 1);
+      let a3 =  arc.create(v1,     v2,     1);
+      let a4 =  arc.create(v2,     v1,     1);
+      let a5 =  arc.create(v2,     v3,     1);
+      let a6 =  arc.create(v3,     v2,     1);
+
+      let a7 =  arc.create(source, v4,     2);
+      let a8 =  arc.create(v4,     source, 3);
+      let a9 =  arc.create(v4,     v5,     4);
+      let a10 = arc.create(v5,     v4,     5);
+      let a11 = arc.create(v5,     v6,     2);
+      let a12 = arc.create(v6,     v5,     3);
+      let a13 = arc.create(v6,     sink,   4);
+      let a14 = arc.create(sink,   v6,     5);
+
+      source.outgoingArcs = [a1, a7];
+      v1.outgoingArcs = [a3, a2];
+      v2.outgoingArcs = [a5, a4];
+      v3.outgoingArcs = [a6];
+      v4.outgoingArcs = [a9, a8];
+      v5.outgoingArcs = [a11, a10];
+      v6.outgoingArcs = [a13, a12];
+      sink.outgoingArcs = [a14];
+
+      let vertices = [source, v1, v2, v3, v4, v5, v6, sink];
+      let arcs = [a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14];
+
+      let g = graph.create(vertices, arcs);
+      g.source = source;
+      g.sink = sink;
+
+      let s = stack.create();
+      let traverse = graphTraversal.init(s, g);
+      let output = graphTraversal.run(traverse, sink);
+
+      expect(output.minCapacity).to.equal(2);
+    });
+
   });
 
 });

@@ -22,7 +22,7 @@ const sigmaConfig = require('../../../config/sigma');
       this.initCapacity = capacity;
       this.flow = 0;
       this.distance = calculation.euclidianDistance(from, to);
-      this.label = this.flow + '/' + this.capacity;
+      this.label = this.flow + '/' + this.initCapacity + '(' + this.capacity + ')';
       this.type = sigmaConfig.EDGE_TYPE;
       this.color = sigmaConfig.EDGE_COLOR;
       this.reverse = null;
@@ -36,20 +36,39 @@ const sigmaConfig = require('../../../config/sigma');
       return this.distance - other.distance;
     }
 
-    setCapacity(capacity) {
-      this.capacity = capacity;
-      this.label = this.flow + '/' + this.capacity;
+    setInitialCapacity(capacity) {
+      this.initCapacity = capacity;
+      this.setCapacity(capacity);
 
       return this;
     }
 
-    setFlow(flow) {
+    setCapacity(capacity) {
+      this.capacity = capacity;
+      this.label = this.flow + '/' + this.initCapacity + '(' + this.capacity + ')';
+
+      return this;
+    }
+
+    increaseFlow(flow) {
       if (flow > this.capacity) {
         throw new Error('Flow exceeds capacity');
       }
 
-      this.flow = flow;
-      this.label = this.flow + '/' + this.capacity;
+      // Set flow
+      this.flow = this.flow + flow;
+
+      // Update capacity
+      this.capacity = this.capacity - flow;
+
+      // Update label
+      this.label = this.flow + '/' + this.initCapacity + '(' + this.capacity + ')';
+
+      // If a reverse arc exists, update it
+      if (this.reverse) {
+        this.reverse.setCapacity(this.reverse.capacity + flow);
+      }
+
       return this;
     }
 

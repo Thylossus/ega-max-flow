@@ -78,9 +78,9 @@ describe('Graph', () => {
 
         let g = graph.create(vertices, arcs);
 
-        a1.setFlow(3);
-        a2.setFlow(2);
-        a3.setFlow(1);
+        a1.increaseFlow(3);
+        a2.increaseFlow(2);
+        a3.increaseFlow(1);
 
         let flow = g.getFlow();
 
@@ -112,12 +112,12 @@ describe('Graph', () => {
 
         let g = graph.create(vertices, arcs);
 
-        a1.setCapacity(100);
-        a2.setCapacity(75);
-        a3.setCapacity(50);
-        a1.setFlow(3);
-        a2.setFlow(2);
-        a3.setFlow(1);
+        a1.capacity = 100;
+        a2.capacity = 75;
+        a3.capacity = 50;
+        a1.increaseFlow(3);
+        a2.increaseFlow(2);
+        a3.increaseFlow(1);
 
         g.reset();
 

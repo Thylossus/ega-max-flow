@@ -83,8 +83,7 @@ const sigmaConfig = require('../../../config/sigma');
       arcs.forEach((a) => {
         // Update capacity
         if (a.from.equals(source) || a.to.equals(source) || a.from.equals(sink) || a.to.equals(sink)) {
-          a.setCapacity(Math.min(maxUsedCapacity + 1, this.maxCapacity));
-          a.initCapacity = Math.min(maxUsedCapacity + 1, this.maxCapacity);
+          a.setInitialCapacity(Math.min(maxUsedCapacity + 1, this.maxCapacity));
         }
 
         // Add to outgoing arcs
