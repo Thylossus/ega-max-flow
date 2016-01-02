@@ -69,6 +69,9 @@ $(document).ready(() => {
     // Reset log
     log = [];
 
+    // Reset all arc colors
+    graph.arcs.forEach((arc) => {arc.color = sigmaSettings.EDGE_COLOR;});
+
     // Reset graph
     graph.reset();
     s.graph.clear();

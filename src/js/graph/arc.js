@@ -11,6 +11,10 @@ const sigmaConfig = require('../../../config/sigma');
     return `a${count}`;
   }
 
+  function buildLabel(arc) {
+    return arc.flow + '/' + arc.initCapacity + '(' + arc.capacity + ')';
+  }
+
   class Arc {
     constructor(from, to, capacity) {
       this.id = id_gen();
@@ -22,7 +26,7 @@ const sigmaConfig = require('../../../config/sigma');
       this.initCapacity = capacity;
       this.flow = 0;
       this.distance = calculation.euclidianDistance(from, to);
-      this.label = this.flow + '/' + this.initCapacity + '(' + this.capacity + ')';
+      this.label = buildLabel(this);
       this.type = sigmaConfig.EDGE_TYPE;
       this.color = sigmaConfig.EDGE_COLOR;
       this.reverse = null;
@@ -45,7 +49,7 @@ const sigmaConfig = require('../../../config/sigma');
 
     setCapacity(capacity) {
       this.capacity = capacity;
-      this.label = this.flow + '/' + this.initCapacity + '(' + this.capacity + ')';
+      this.label = buildLabel(this);
 
       return this;
     }
@@ -62,7 +66,7 @@ const sigmaConfig = require('../../../config/sigma');
       this.capacity = this.capacity - flow;
 
       // Update label
-      this.label = this.flow + '/' + this.initCapacity + '(' + this.capacity + ')';
+      this.label = buildLabel(this);
 
       // If a reverse arc exists, update it
       if (this.reverse) {
@@ -75,6 +79,7 @@ const sigmaConfig = require('../../../config/sigma');
     reset() {
       this.capacity = this.initCapacity;
       this.flow = 0;
+      this.label = buildLabel(this);
 
       return this;
     }
