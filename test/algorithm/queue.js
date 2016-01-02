@@ -166,6 +166,37 @@ describe('Queue', () => {
       });
 
     });
+
+    describe('#toString', () => {
+
+      it('should return a string', () => {
+        let q = queue.create();
+
+        expect(q.toString()).to.be.a('string');
+      });
+
+      it('should return "empty" for an empty queue', () => {
+        let q = queue.create();
+
+        expect(q.toString()).to.equal('empty');
+      });
+
+      it('should transfer the queue into a string representation', () => {
+        let q = queue.create();
+        let v1 = 1;
+        let v2 = 2;
+        let v3 = 3;
+        let v4 = 4;
+
+        q.push(v1);
+        q.push(v2);
+        q.push(v3);
+        q.push(v4);
+
+        expect(q.toString()).to.equal('-> ' + v1 + ' < ' + v2 + ' < ' + v3 + ' < ' + v4);
+      });
+
+    });
   });
 
 });

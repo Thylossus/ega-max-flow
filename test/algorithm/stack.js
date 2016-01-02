@@ -164,6 +164,38 @@ describe('Stack', () => {
       });
 
     });
+
+    describe('#toString', () => {
+
+      it('should return a string', () => {
+        let s = stack.create();
+
+        expect(s.toString()).to.be.a('string');
+      });
+
+      it('should return "empty" for an empty queue', () => {
+        let s = stack.create();
+
+        expect(s.toString()).to.equal('empty');
+      });
+
+      it('should transfer the queue into a string representation', () => {
+        let s = stack.create();
+        let v1 = 1;
+        let v2 = 2;
+        let v3 = 3;
+        let v4 = 4;
+
+        s.push(v1);
+        s.push(v2);
+        s.push(v3);
+        s.push(v4);
+
+        expect(s.toString()).to.equal('-> ' + v4 + ' > ' + v3 + ' > ' + v2 + ' > ' + v1);
+      });
+
+    });
+
   });
 
 });

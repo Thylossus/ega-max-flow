@@ -43,6 +43,22 @@
 
       return this.stackHead.value;
     }
+
+    toString() {
+      let item = this.stackHead;
+
+      if (!item) {
+        return 'empty';
+      }
+
+      let representation = '-> ' + item.value;
+
+      while (item = item.next) {
+        representation = representation + ' > ' + item.value;
+      }
+
+      return representation;
+    }
   }
 
   exports.create = () => {

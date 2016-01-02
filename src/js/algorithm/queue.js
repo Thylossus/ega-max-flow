@@ -62,6 +62,22 @@
 
       return this.queueHead.value;
     }
+
+    toString() {
+      let item = this.queueHead;
+
+      if (!item) {
+        return 'empty';
+      }
+
+      let representation = '-> ' + item.value;
+
+      while (item = item.next) {
+        representation = representation + ' < ' + item.value;
+      }
+
+      return representation;
+    }
   }
 
   exports.create = () => {
