@@ -35,6 +35,8 @@ describe('Arc', () => {
         expect(a).to.have.property('type').that.is.a('string');
         expect(a).to.have.property('color').that.is.a('string');
         expect(a).to.have.property('reverse');
+        expect(a).to.have.property('level').that.is.a('boolean');
+
         expect(a.from).to.equal(from);
         expect(a.to).to.equal(to);
         expect(a.source).to.equal(from.id);
@@ -46,6 +48,7 @@ describe('Arc', () => {
         expect(a.type).to.equal(sigmaConfig.EDGE_TYPE);
         expect(a.color).to.equal(sigmaConfig.EDGE_COLOR);
         expect(a.reverse).to.be.null;
+        expect(a.level).to.be.false;
 
       });
 
@@ -297,6 +300,17 @@ describe('Arc', () => {
         a.increaseFlow(5)
 
         expect(a.reset().flow).to.be.equal(0);
+      });
+
+      it('should reset the level flag', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 10);
+
+        a.level = true;
+        a.reset();
+
+        expect(a.level).to.be.false;        
       });
 
     });

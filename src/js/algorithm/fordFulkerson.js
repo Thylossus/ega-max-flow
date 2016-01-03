@@ -1,5 +1,5 @@
 const graphTraversal = require('./graphTraversal');
-const stack = require('./stack');
+const stack = require('../structure/stack');
 
 (function() {
   'use strict';

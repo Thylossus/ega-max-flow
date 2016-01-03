@@ -6,7 +6,7 @@ $(document).ready(() => {
   const algorithms = {
     1: egamaxflow.algorithm.fordFulkerson,
     2: egamaxflow.algorithm.edmondsKarp,
-    3: null,
+    3: egamaxflow.algorithm.dinic,
     4: null
   };
   const algorithmNames = {

@@ -5,11 +5,15 @@ const sigmaConfig = require('../../../config/sigma');
 (function () {
   'use strict';
 
-  var count = 0;
+  let count = 0;
 
   function id_gen() {
     count += 1;
     return `v${count}`;
+  }
+
+  function buildLabel(vertex) {
+    return vertex.id + ' (' + (vertex.level === Infinity ? '∞' : vertex.level) + ')';
   }
 
   class Vertex {
@@ -19,7 +23,6 @@ const sigmaConfig = require('../../../config/sigma');
       this.y = y === undefined ? random(graphConfig.GRID_SIZE) : y;
       this.size = sigmaConfig.NODE_SIZE;
       this.color = sigmaConfig.NODE_COLOR;
-      this.label = this.id;
       this.type = graphConfig.VERTEX_TYPE.OTHER;
       this.outgoingArcs = [];
       this.currentArcIndex = -1;
@@ -29,6 +32,11 @@ const sigmaConfig = require('../../../config/sigma');
       this.parent = null;
       this.parentArc = null;
       this.parentArcMinCapacity = Infinity;
+      // These properties are requred for building a level graph
+      this.level = Infinity;
+
+      // Build the label
+      this.label = buildLabel(this);
     }
 
     equals(other) {
@@ -42,6 +50,8 @@ const sigmaConfig = require('../../../config/sigma');
       this.parent = null;
       this.parentArc = null;
       this.parentArcMinCapacity = Infinity;
+      this.level = Infinity;
+      this.label = buildLabel(this);
 
       return this;
     }
@@ -49,6 +59,11 @@ const sigmaConfig = require('../../../config/sigma');
     nextArc() {
       this.currentArcIndex += 1;
       return this.outgoingArcs[this.currentArcIndex] || null;
+    }
+
+    setLevel(level) {
+      this.level = level;
+      this.label = buildLabel(this);
     }
   }
 

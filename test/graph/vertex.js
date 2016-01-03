@@ -30,18 +30,20 @@ describe('Vertex', () => {
         expect(v).to.have.property('parent').that.is.null;
         expect(v).to.have.property('parentArc').that.is.null;
         expect(v).to.have.property('parentArcMinCapacity').that.is.a('number');
+        expect(v).to.have.property('level').that.is.a('number');
 
         expect(v.x).to.be.below(graphConfig.GRID_SIZE + 1);
         expect(v.y).to.be.below(graphConfig.GRID_SIZE +1);
         expect(v.size).to.be.equal(sigmaConfig.NODE_SIZE);
         expect(v.color).to.be.equal(sigmaConfig.NODE_COLOR);
-        expect(v.label).to.be.equal(v.id);
+        expect(v.label).to.be.equal(v.id + ' (∞)');
         expect(v.type).to.be.equal(graphConfig.VERTEX_TYPE.OTHER);
         expect(v.outgoingArcs).to.be.empty;
         expect(v.currentArcIndex).to.be.equal(-1);
         expect(v.seen).to.be.false;
         expect(v.finished).to.be.false;
         expect(v.parentArcMinCapacity).to.be.equal(Infinity);
+        expect(v.level).to.be.equal(Infinity);
 
       });
 
@@ -119,6 +121,38 @@ describe('Vertex', () => {
         expect(v.parent).to.be.null;
         expect(v.parentArc).to.be.null;
         expect(v.parentArcMinCapacity).to.equal(Infinity);
+      });
+
+      it('should reset the level', () => {
+        let v = vertex.create();
+        v.setLevel(10);
+
+        v.reset();
+
+        expect(v.level).to.be.equal(Infinity);
+        expect(v.label).to.be.equal(v.id + ' (∞)');
+      });
+
+    });
+
+    describe('#setLevel', () => {
+
+      it('should change the level', () => {
+        let v = vertex.create();
+        let lvl = 10;
+
+        v.setLevel(lvl);
+
+        expect(v.level).to.equal(lvl);
+      });
+
+      it('should change the label', () => {
+        let v = vertex.create();
+        let lvl = 10;
+
+        v.setLevel(lvl);
+
+        expect(v.label).to.equal(v.id + ' (' + lvl + ')');
       });
 
     });

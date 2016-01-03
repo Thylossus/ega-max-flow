@@ -5,8 +5,8 @@ const expect = chai.expect;
 
 const graphTraversal = require('../../src/js/algorithm/graphTraversal');
 const generator = require('../../src/js/graph/generator');
-const stack = require('../../src/js/algorithm/stack');
-const queue = require('../../src/js/algorithm/queue');
+const stack = require('../../src/js/structure/stack');
+const queue = require('../../src/js/structure/queue');
 const graph = require('../../src/js/graph/graph');
 const vertex = require('../../src/js/graph/vertex');
 const arc = require('../../src/js/graph/arc');

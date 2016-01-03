@@ -1,5 +1,5 @@
 const graphTraversal = require('./graphTraversal');
-const queue = require('./queue');
+const queue = require('../structure/queue');
 
 (function() {
   'use strict';

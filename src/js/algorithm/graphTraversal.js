@@ -1,6 +1,6 @@
 const curry = require('lodash/function/curry');
-const queue = require('./queue');
-const stack = require('./stack');
+const queue = require('../structure/queue');
+const stack = require('../structure/stack');
 
 (function() {
   'use strict';
@@ -42,6 +42,9 @@ const stack = require('./stack');
     output.aborescence.Vprime.push(s);
     output.lexicographical.push(s);
 
+    // Set the level for the source to 0 for building a level graph (only relevant for Dinic)
+    s.setLevel(0);
+
     while (!store.empty) {
       v = store.top();
       a = v.nextArc();
@@ -61,6 +64,9 @@ const stack = require('./stack');
         a.to.seen = true;
         store.push(a.to);
 
+        // Set the target vertex' level
+        a.to.setLevel(v.level + 1);
+
         // Set properties for finding paths with BFS
         a.to.parent = a.from;
         a.to.parentArc = a;
@@ -75,6 +81,11 @@ const stack = require('./stack');
         output.aborescence.Vprime.push(a.to);
         output.lexicographical.push(a.to);
         output.arcs.push(a);
+      }
+
+      // If the distances of the arc's vertices satisfy the condition for a level graph, mark the arc as part of the level graph
+      if (a && a.to.level === a.from.level + 1) {
+        a.level = true;
       }
 
       output.minCapacity = lastMinCapacity === Infinity ? overallMinCapacity : lastMinCapacity;

@@ -3,7 +3,7 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const queue = require('../../src/js/algorithm/queue');
+const queue = require('../../src/js/structure/queue');
 
 describe('Queue', () => {
 

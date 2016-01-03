@@ -3,7 +3,7 @@
 const chai = require('chai');
 const expect = chai.expect;
 
-const stack = require('../../src/js/algorithm/stack');
+const stack = require('../../src/js/structure/stack');
 
 describe('Stack', () => {
 
