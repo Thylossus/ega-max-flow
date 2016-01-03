@@ -67,7 +67,10 @@ describe('Graph Traversal', () => {
       expect(output).to.have.property('lexicographical').that.is.an('array');
       expect(output).to.have.property('parenthetical').that.is.an('array');
       expect(output).to.have.property('arcs').that.is.an('array');
-      expect(output).to.have.property('minCapacity').that.is.an('number');
+      expect(output).to.have.property('minCapacity').that.is.a('number');
+      expect(output).to.have.property('currentArc');
+      expect(output).to.have.property('currentVertex').that.is.an('object');
+      expect(output).to.have.property('progress').that.is.a('boolean');
     });
 
   });
@@ -84,6 +87,9 @@ describe('Graph Traversal', () => {
       expect(output).to.have.property('parenthetical').that.is.an('array');
       expect(output).to.have.property('arcs').that.is.an('array');
       expect(output).to.have.property('minCapacity').that.is.an('number');
+      expect(output).to.have.property('currentArc');
+      expect(output).to.have.property('currentVertex').that.is.an('object');
+      expect(output).to.have.property('progress').that.is.a('boolean');
     });
 
     it('should contain all connected vertices for DFS', () => {

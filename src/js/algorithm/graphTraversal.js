@@ -19,7 +19,10 @@ const stack = require('../structure/stack');
       parenthetical: [],
       // Arcs in lexicographical order
       arcs: [],
-      minCapacity: Infinity
+      minCapacity: Infinity,
+      currentArc: null,
+      currentVertex: null,
+      progress: true
     }
     // Set of vertices
     let V = graph.vertices;
@@ -48,6 +51,10 @@ const stack = require('../structure/stack');
     while (!store.empty) {
       v = store.top();
       a = v.nextArc();
+
+      output.currentArc = a;
+      output.currentVertex = v;
+      output.progress = true;
 
       if (a === null) {
         v.finished = true;
@@ -81,6 +88,8 @@ const stack = require('../structure/stack');
         output.aborescence.Vprime.push(a.to);
         output.lexicographical.push(a.to);
         output.arcs.push(a);
+      } else {
+        output.progress = false;
       }
 
       // If the distances of the arc's vertices satisfy the condition for a level graph, mark the arc as part of the level graph
