@@ -14,7 +14,11 @@ const queue = require('../structure/queue');
     while (!result.done) {
       output = result.value;
       if (output.currentArc && output.currentArc.level) {
-        
+        // TODO: construct a level graph with its arcs in a doubly linked list for O(1) deletion of arcs and vertices; implement the special dfs for dinic dfs
+        // http://wiki.algo.informatik.tu-darmstadt.de/Blocking_flow_by_Dinic
+        // http://math.mit.edu/~rpeng/18434/blockingFlows.pdf
+        // https://github.com/andrewrjones/doubly-linked-list-js
+        // https://en.wikipedia.org/wiki/Dinic%27s_algorithm
         console.log(output.currentArc.from.id + ' -> ' + output.currentArc.to.id);
       }
       result = bfsTraversal.next();

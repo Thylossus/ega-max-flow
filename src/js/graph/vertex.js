@@ -13,7 +13,7 @@ const sigmaConfig = require('../../../config/sigma');
   }
 
   function buildLabel(vertex) {
-    return vertex.id + ' (' + (vertex.level === Infinity ? '∞' : vertex.level) + ')';
+    return vertex.id + ' (' + (vertex.level === Infinity ? 'inf' : vertex.level) + ')';
   }
 
   class Vertex {

@@ -36,7 +36,7 @@ describe('Vertex', () => {
         expect(v.y).to.be.below(graphConfig.GRID_SIZE +1);
         expect(v.size).to.be.equal(sigmaConfig.NODE_SIZE);
         expect(v.color).to.be.equal(sigmaConfig.NODE_COLOR);
-        expect(v.label).to.be.equal(v.id + ' (∞)');
+        expect(v.label).to.be.equal(v.id + ' (inf)');
         expect(v.type).to.be.equal(graphConfig.VERTEX_TYPE.OTHER);
         expect(v.outgoingArcs).to.be.empty;
         expect(v.currentArcIndex).to.be.equal(-1);
@@ -130,7 +130,7 @@ describe('Vertex', () => {
         v.reset();
 
         expect(v.level).to.be.equal(Infinity);
-        expect(v.label).to.be.equal(v.id + ' (∞)');
+        expect(v.label).to.be.equal(v.id + ' (inf)');
       });
 
     });
