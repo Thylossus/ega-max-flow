@@ -21,6 +21,7 @@ $(document).ready(() => {
   graph.nodes = graph.vertices;
   graph.edges = graph.arcs;
 
+  let activeAlgorithm;
   let iterator;
   let log = [];
 
@@ -78,6 +79,9 @@ $(document).ready(() => {
     s.graph.read(graph);
     s.refresh();
 
+    // Set active algorithm
+    activeAlgorithm = algorithmNames[algorithm]
+
     // Initialize algorithm
     algorithm = algorithms[algorithm];
     iterator = algorithm.init(graph);
@@ -118,34 +122,47 @@ $(document).ready(() => {
       outputList.append('<li>Maximum flow = ' + maxFlow + '</li>');
       outputList.append('<li>All arcs with flow > 0 are highlighted.</li>');
     } else {
-      // Highlight flow augmenting path
-      graph.arcs.forEach((arc) => {
-        let onPath = output.flowAugmentingPath.some((a) => {
-          return a.equals(arc);
+      if (activeAlgorithm === 'Dinic') {
+        // Highlight level graph
+        graph.arcs.forEach((arc) => {
+          if (arc.level) {
+            arc.color = sigmaSettings.EDGE_ACTIVE_COLOR;
+          } else {
+            arc.color = sigmaSettings.EDGE_COLOR;
+          }
         });
 
-        if (onPath) {
-          arc.color = sigmaSettings.EDGE_ACTIVE_COLOR;
-        } else {
-          arc.color = sigmaSettings.EDGE_COLOR;
-        }
-      });
+      } else {
+        // Highlight flow augmenting path
+        graph.arcs.forEach((arc) => {
+          let onPath = output.flowAugmentingPath.some((a) => {
+            return a.equals(arc);
+          });
 
-      // Log augmenting path
-      let path = output.flowAugmentingPath[0].from.id;
-      path = output.flowAugmentingPath.reduce((p, arc) => {
-        return p + ' > ' + arc.to.id;
-      }, path);
-      log.push(path);
+          if (onPath) {
+            arc.color = sigmaSettings.EDGE_ACTIVE_COLOR;
+          } else {
+            arc.color = sigmaSettings.EDGE_COLOR;
+          }
+        });
 
-      // Log to list
-      outputList.html('');
-      log.forEach((entry) => {
-        outputList.append('<li>' + entry + '</li>');
-      });
+        // Log augmenting path
+        let path = output.flowAugmentingPath[0].from.id;
+        path = output.flowAugmentingPath.reduce((p, arc) => {
+          return p + ' > ' + arc.to.id;
+        }, path);
+        log.push(path);
 
-      console.log(output);
-      console.log(output.flowAugmentingPath.map((arc) => {return arc.from.id + " -> " + arc.to.id}));
+        // Log to list
+        outputList.html('');
+        log.forEach((entry) => {
+          outputList.append('<li>' + entry + '</li>');
+        });
+
+        console.log(output);
+        console.log(output.flowAugmentingPath.map((arc) => {return arc.from.id + " -> " + arc.to.id}));
+      }
+
     }
 
 

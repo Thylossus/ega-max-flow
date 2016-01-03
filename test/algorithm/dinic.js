@@ -26,29 +26,25 @@ describe('Dinic', () => {
       expect(iterator.value).to.be.undefined;
     });
 
-    // it('the iterator should yield an output object', () => {
-    //   let g = generator.create(10, 100).run();
-    //   let iterator = dinic.init(g);
-    //   let result = iterator.next();
-    //
-    //   expect(result.value).to.be.an('object');
-    //   expect(result.value).to.have.property('flowAugmentingPath').that.is.an('array');
-    //   expect(result.value).to.have.property('flow').that.is.an('object');
-    // });
+    it('the iterator should yield an output object', () => {
+      let g = generator.create(10, 100).run();
+      let iterator = dinic.init(g);
+      let result = iterator.next();
+
+      expect(result.value).to.be.an('object');
+    });
 
   });
 
   describe('#run', () => {
 
-    // it('should return a flow', () => {
-    //   let g = generator.create(10, 100).run();
-    //   let iterator = dinic.init(g);
-    //   let output = fordFulkerson.run(iterator);
-    //
-    //   expect(output).to.be.an('object');
-    //   expect(output).to.have.property('flowAugmentingPath').that.is.an('array');
-    //   expect(output).to.have.property('flow').that.is.an('object');
-    // });
+    it('should return a flow', () => {
+      let g = generator.create(10, 100).run();
+      let iterator = dinic.init(g);
+      let output = dinic.run(iterator);
+
+      expect(output).to.be.an('object');
+    });
 
   });
 
