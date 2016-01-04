@@ -30,8 +30,6 @@ const sigmaConfig = require('../../../config/sigma');
       this.type = sigmaConfig.EDGE_TYPE;
       this.color = sigmaConfig.EDGE_COLOR;
       this.reverse = null;
-      // This property is required for building a level graph
-      this.level = false;
     }
 
     equals(other) {
@@ -82,7 +80,6 @@ const sigmaConfig = require('../../../config/sigma');
       this.capacity = this.initCapacity;
       this.flow = 0;
       this.label = buildLabel(this);
-      this.level = false;
 
       return this;
     }
