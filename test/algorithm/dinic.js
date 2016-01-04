@@ -32,6 +32,9 @@ describe('Dinic', () => {
       let result = iterator.next();
 
       expect(result.value).to.be.an('object');
+      expect(result.value).to.have.property('levelGraph').that.is.an('object');
+      expect(result.value).to.have.property('blockingFlow').that.is.an('object');
+
     });
 
   });
@@ -44,6 +47,8 @@ describe('Dinic', () => {
       let output = dinic.run(iterator);
 
       expect(output).to.be.an('object');
+      expect(output).to.have.property('levelGraph').that.is.an('object');
+      expect(output).to.have.property('blockingFlow').that.is.an('object');
     });
 
   });
