@@ -92,11 +92,6 @@ const stack = require('../structure/stack');
         output.progress = false;
       }
 
-      // If the distances of the arc's vertices satisfy the condition for a level graph, mark the arc as part of the level graph
-      if (a && a.to.level === a.from.level + 1) {
-        a.level = true;
-      }
-
       output.minCapacity = lastMinCapacity === Infinity ? overallMinCapacity : lastMinCapacity;
 
       yield output;

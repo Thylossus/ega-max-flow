@@ -125,8 +125,20 @@ $(document).ready(() => {
       if (activeAlgorithm === 'Dinic') {
         // Highlight level graph
         graph.arcs.forEach((arc) => {
-          if (arc.level) {
+          let onLevelGraph = output.levelGraph.arcs.some((a) => {
+            return a.equals(arc);
+          });
+
+          if (onLevelGraph) {
             arc.color = sigmaSettings.EDGE_ACTIVE_COLOR;
+
+            let onBlockingFlow = output.blockingFlow.arcs.some((a) => {
+              return a.equals(arc);
+            });
+
+            if (onBlockingFlow) {
+              arc.color = sigmaSettings.EDGE_HIGHLIGHT_COLOR;
+            }
           } else {
             arc.color = sigmaSettings.EDGE_COLOR;
           }

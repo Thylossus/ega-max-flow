@@ -14,39 +14,46 @@ const dll = require('../structure/dll');
 
     let levelGraph = {
       sink: graph.sink,
-      source: graph.source
+      source: graph.source,
+      arcs: []
     };
 
     let outgoingArcListElement;
     let incomingArcListElement;
 
+    // Current arc
+    let a;
+
     while (!result.done) {
       output = result.value;
+      a = output.currentArc;
 
-      if (output.currentArc && output.currentArc.level) {
-        if (!output.currentArc.from.outgoingArcList) {
-          output.currentArc.from.outgoingArcList = dll.create();
-          output.currentArc.from.outgoingArcListPointer = output.currentArc.from.outgoingArcList.head;
+      if (a && a.to.level === a.from.level + 1 && a.capacity > 0) {
+        levelGraph.arcs.push(a);
+
+        if (!a.from.outgoingArcList) {
+          a.from.outgoingArcList = dll.create();
+          a.from.outgoingArcListPointer = a.from.outgoingArcList.head;
         }
 
-        if (!output.currentArc.to.incomingArcList) {
-          output.currentArc.to.incomingArcList = dll.create();
+        if (!a.to.incomingArcList) {
+          a.to.incomingArcList = dll.create();
         }
 
-        outgoingArcListElement = output.currentArc.from.outgoingArcList.add(output.currentArc);
-        incomingArcListElement = output.currentArc.to.incomingArcList.add(output.currentArc);
+        outgoingArcListElement = a.from.outgoingArcList.add(a);
+        incomingArcListElement = a.to.incomingArcList.add(a);
 
         // Set cross references
         outgoingArcListElement.elementRef = {
-          list: output.currentArc.to.incomingArcList,
+          list: a.to.incomingArcList,
           element: incomingArcListElement,
-          vertex: output.currentArc.to
+          vertex: a.to
         };
 
         incomingArcListElement.elementRef = {
-          list: output.currentArc.from.outgoingArcList,
+          list: a.from.outgoingArcList,
           element: outgoingArcListElement,
-          vertex: output.currentArc.from
+          vertex: a.from
         }
       }
       result = bfsTraversal.next();
@@ -56,7 +63,7 @@ const dll = require('../structure/dll');
   }
 
   function getNextOutgoingArcElement(vertex) {
-    if (vertex.outgoingArcListPointer === undefined) {
+    if (vertex.outgoingArcListPointer === undefined || !vertex.outgoingArcList) {
       return null;
     } else if (vertex.outgoingArcListPointer === null) {
       vertex.outgoingArcListPointer = vertex.outgoingArcList.head;
@@ -153,11 +160,19 @@ const dll = require('../structure/dll');
 
   function calculateBlockingFlow(levelGraph, graph) {
     let pathFindingResult = findFlowAugmentingPathInLevelGraph(levelGraph);
+    let blockingFlow = {
+      arcs: [],
+      flow: []
+    };
 
     while (pathFindingResult) {
       pathFindingResult.path.forEach((element) => {
         // Increase flow
         element.value.increaseFlow(pathFindingResult.minCapacity);
+
+        // Add to result
+        blockingFlow.arcs.push(element.value);
+        blockingFlow.flow.push({id: element.value.id, value: pathFindingResult.minCapacity});
 
         // Check if capacity was reduced to 0
         if (element.value.capacity === 0) {
@@ -178,6 +193,8 @@ const dll = require('../structure/dll');
       // Search for the next path
       pathFindingResult = findFlowAugmentingPathInLevelGraph(levelGraph);
     }
+
+    return blockingFlow;
   }
 
   function* iterator(graph) {
@@ -190,7 +207,8 @@ const dll = require('../structure/dll');
         vertex.reset();
       });
 
-      calculateBlockingFlow(levelGraph, graph);
+      output.blockingFlow = calculateBlockingFlow(levelGraph, graph);
+      output.levelGraph = levelGraph;
 
       yield output;
       // Reset vertices
