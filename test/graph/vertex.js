@@ -31,6 +31,9 @@ describe('Vertex', () => {
         expect(v).to.have.property('parentArc').that.is.null;
         expect(v).to.have.property('parentArcMinCapacity').that.is.a('number');
         expect(v).to.have.property('level').that.is.a('number');
+        // Distance label and excess for preflow-push
+        expect(v).to.have.property('distance').that.is.a('number');
+        expect(v).to.have.property('excess').that.is.a('number');
 
         expect(v.x).to.be.below(graphConfig.GRID_SIZE + 1);
         expect(v.y).to.be.below(graphConfig.GRID_SIZE +1);
@@ -44,6 +47,8 @@ describe('Vertex', () => {
         expect(v.finished).to.be.false;
         expect(v.parentArcMinCapacity).to.be.equal(Infinity);
         expect(v.level).to.be.equal(Infinity);
+        expect(v.distance).to.be.equal(0);
+        expect(v.excess).to.be.equal(0);
 
       });
 
@@ -131,6 +136,24 @@ describe('Vertex', () => {
 
         expect(v.level).to.be.equal(Infinity);
         expect(v.label).to.be.equal(v.id + ' (inf)');
+      });
+
+      it('should reset the distance', () => {
+        let v = vertex.create();
+        v.distance = 10;
+
+        v.reset();
+
+        expect(v.distance).to.be.equal(0);
+      });
+
+      it('should reset the excess', () => {
+        let v = vertex.create();
+        v.excess = 10;
+
+        v.reset();
+
+        expect(v.excess).to.be.equal(0);
       });
 
     });

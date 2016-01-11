@@ -34,6 +34,9 @@ const sigmaConfig = require('../../../config/sigma');
       this.parentArcMinCapacity = Infinity;
       // These properties are requred for building a level graph
       this.level = Infinity;
+      // These properties are required for preflow-push
+      this.distance = 0;
+      this.excess = 0;
 
       // Build the label
       this.label = buildLabel(this);
@@ -52,6 +55,8 @@ const sigmaConfig = require('../../../config/sigma');
       this.parentArcMinCapacity = Infinity;
       this.level = Infinity;
       this.label = buildLabel(this);
+      this.distance = 0;
+      this.excess = 0;
 
       return this;
     }
