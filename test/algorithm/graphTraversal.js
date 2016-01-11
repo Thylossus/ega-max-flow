@@ -73,6 +73,16 @@ describe('Graph Traversal', () => {
       expect(output).to.have.property('progress').that.is.a('boolean');
     });
 
+    it('should take the start vertex as an input argument', () => {
+      let g = generator.create(10, 100).run();
+      let q = queue.create();
+      let traverse = graphTraversal.init(q, g, g.sink);
+
+      let output = traverse.next().value;
+
+      expect(output.currentVertex.equals(g.sink)).to.be.true;
+    });
+
   });
 
   describe('#run', () => {

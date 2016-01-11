@@ -5,7 +5,7 @@ const stack = require('../structure/stack');
 (function() {
   'use strict';
 
-  function* traverse(store, graph) {
+  function* traverse(store, graph, startVertex) {
     // Output
     let output = {
       // Aborescence
@@ -27,7 +27,7 @@ const stack = require('../structure/stack');
     // Set of vertices
     let V = graph.vertices;
     // Start vertex
-    let s = graph.source;
+    let s = startVertex || graph.source;
 
     // Minimum capacities
     let minCapacities = [];
@@ -100,15 +100,15 @@ const stack = require('../structure/stack');
     return null;
   }
 
-  function init(store, graph) {
+  function init(store, graph, startVertex) {
     if (!(store instanceof queue.Queue) && !(store instanceof stack.Stack)) {
       throw new Error('Unsupported data structure. Please provide queue or stack');
     }
 
-    return traverse(store, graph);
+    return traverse(store, graph, startVertex);
   }
 
-  exports.init = curry(init);
+  exports.init = curry(init, 2);
 
   exports.run = (traverse, termination) => {
     let output = null;
