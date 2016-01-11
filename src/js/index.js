@@ -7,7 +7,7 @@ $(document).ready(() => {
     1: egamaxflow.algorithm.fordFulkerson,
     2: egamaxflow.algorithm.edmondsKarp,
     3: egamaxflow.algorithm.dinic,
-    4: null
+    4: egamaxflow.algorithm.preflowPush
   };
   const algorithmNames = {
     1: 'Ford-Fulkerson',
