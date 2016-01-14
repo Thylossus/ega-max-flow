@@ -34,6 +34,7 @@ describe('Vertex', () => {
         // Distance label and excess for preflow-push
         expect(v).to.have.property('distance').that.is.a('number');
         expect(v).to.have.property('excess').that.is.a('number');
+        expect(v).to.have.property('minNeighborDistance').that.is.a('number');
 
         expect(v.x).to.be.below(graphConfig.GRID_SIZE + 1);
         expect(v.y).to.be.below(graphConfig.GRID_SIZE +1);
@@ -49,6 +50,7 @@ describe('Vertex', () => {
         expect(v.level).to.be.equal(Infinity);
         expect(v.distance).to.be.equal(0);
         expect(v.excess).to.be.equal(0);
+        expect(v.minNeighborDistance).to.be.equal(Infinity);
 
       });
 

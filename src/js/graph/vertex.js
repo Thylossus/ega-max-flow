@@ -37,6 +37,7 @@ const sigmaConfig = require('../../../config/sigma');
       // These properties are required for preflow-push
       this.distance = 0;
       this.excess = 0;
+      this.minNeighborDistance = Infinity;
 
       // Build the label
       this.label = buildLabel(this);
