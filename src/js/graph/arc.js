@@ -83,6 +83,10 @@ const sigmaConfig = require('../../../config/sigma');
 
       return this;
     }
+
+    isAdmissable() {
+      return this.from.distance === this.to.distance + 1;
+    }
   }
 
   exports.create = (from, to, capacity) => {

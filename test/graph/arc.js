@@ -271,6 +271,43 @@ describe('Arc', () => {
 
     });
 
+    describe('#isAdmissable', () => {
+
+      it('should return a boolean value', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 1);
+
+        let admissable = a.isAdmissable();
+
+        expect(admissable).to.be.a('boolean');
+      });
+
+      it('should return true for admissable arcs', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 1);
+
+        v1.distance = 1;
+        v2.distance = 0;
+
+        let admissable = a.isAdmissable();
+
+        expect(admissable).to.be.true;
+      });
+
+      it('should return false for non-admissable arcs', () => {
+        let v1 = vertex.create();
+        let v2 = vertex.create();
+        let a = arc.create(v1, v2, 1);
+
+        let admissable = a.isAdmissable();
+
+        expect(admissable).to.be.false;
+      });
+
+    });
+
     describe('#reset', () => {
 
       it('should return the arc', () => {
