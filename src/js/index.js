@@ -144,6 +144,10 @@ $(document).ready(() => {
           }
         });
 
+      } else if (activeAlgorithm === 'Preflow-Push') {
+        graph.vertices.forEach((vertex) => {
+          vertex.label = 'd=' + vertex.distance;
+        });
       } else {
         // Highlight flow augmenting path
         graph.arcs.forEach((arc) => {
