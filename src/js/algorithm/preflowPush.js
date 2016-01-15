@@ -43,14 +43,19 @@ const queue = require('../structure/queue');
   }
 
   function init(graph) {
+
+    console.group('init');
+
     let S = queue.create();
     let a = graph.source.nextArc();
     let flow = 0;
 
     // Step 1: set flow to 0 for each arc
     // -> finished (this is the default flow value)
+    console.log('set flow to 0 for each arc');
 
     // Step 2: create a staturated cut between the source and the rest of the graph and add the nodes reachable from s to S
+    console.group('create a saturated cut between the source and the rest of the graph');
     while (a !== null) {
       flow = a.capacity;
       a.increaseFlow(flow);
@@ -58,20 +63,27 @@ const queue = require('../structure/queue');
 
       S.push(a.to);
 
+      console.log('push', flow, 'from', a.from.id, 'to', a.to.id, 'and add', a.to.id, 'to S');
+
       a = graph.source.nextArc();
     }
+    console.groupEnd();
 
     // Reset the source vertex in order to reset the current arc index
     graph.source.reset();
 
     // Step 3: compute a valid distance labeling by calculating the distances from t
+    console.log('compute a valid distance labeling');
     distanceFromSink(graph);
 
     // Step 4: set d(s) = |V| (this does not violate the valid distance labeling because all of s's outgoing arcs have capacity 0 due to step 2)
+    console.log('set d(s) = |V|');
     graph.source.distance = graph.vertices.length;
 
     // Step 5: reset all current arc indizes
     // -> finished by resetting all arcs in distanceFromSink()
+
+    console.groupEnd();
 
     return S;
   }
@@ -81,7 +93,7 @@ const queue = require('../structure/queue');
     let flow = 0;
 
     // Step 3.1: add w to set of active vertices
-    if (!w.equals(graph.source) && w.excess === 0) {
+    if (!w.equals(graph.source) && !w.equals(graph.sink) && w.excess === 0) {
       // Add w to S because after this step w will be active
       S.push(w);
     }
@@ -99,9 +111,13 @@ const queue = require('../structure/queue');
       // Since S is a queue, v is on its front because v was obtained via S.top()
       S.pop();
     }
+
+    console.log('push', flow, 'from', a.from.id, 'to', a.to.id);
   }
 
   function relabel(graph, a, v) {
+    console.log('relabel', v.id);
+
     // Step 4.1: Find minimum neighbor distance TODO: check if this violates the complexity constraints
     let dMin = v.outgoingArcs.reduce((min, arc) => {
       // Check if arc.capacity > 0 because arc has to be in the residual network
@@ -129,6 +145,7 @@ const queue = require('../structure/queue');
     let a;
 
     while (!S.empty) {
+      console.log(S.toString());
       // Step 1: choose active node v from S
       v = S.top();
 

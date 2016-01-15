@@ -146,7 +146,7 @@ $(document).ready(() => {
 
       } else if (activeAlgorithm === 'Preflow-Push') {
         graph.vertices.forEach((vertex) => {
-          vertex.label = 'd=' + vertex.distance;
+          vertex.label = vertex.id + ' (d = ' + vertex.distance + ', e = ' + vertex.excess + ')';
         });
       } else {
         // Highlight flow augmenting path
