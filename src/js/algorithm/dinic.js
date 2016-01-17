@@ -269,6 +269,9 @@ const log = require('../util/log');
       // Reset vertices
       graph.vertices.forEach((vertex) => {
         vertex.reset();
+        // Also reset the incoming and outgoing arc lists manually
+        vertex.outgoingArcList = null;
+        vertex.incomingArcList = null;
       });
       levelGraph = buildLevelGraph(graph, logger);
     }
