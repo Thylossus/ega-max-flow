@@ -32,11 +32,24 @@ describe('Preflow Push', () => {
       let result = iterator.next();
 
       expect(result.value).to.be.an('object');
+      expect(result.value).to.have.property('preflow').that.is.an('array');
+      expect(result.value).to.have.property('logger').that.is.an('object');
+      expect(result.value).to.have.property('step').that.is.a('string');
+      expect(result.value).to.have.property('activeElement').that.is.null;
     });
 
   });
 
   describe('#run', () => {
+
+    it('should return a flow', () => {
+      let g = generator.create(10, 100).run();
+      let iterator = preflowPush.init(g);
+      let output = preflowPush.run(iterator);
+
+      expect(output).to.be.an('object');
+      expect(output).to.have.property('flow').that.is.an('object');
+    });
 
   });
 

@@ -15,6 +15,7 @@ $(document).ready(() => {
     3: 'Dinic',
     4: 'Preflow-Push'
   };
+  const dfs = egamaxflow.algorithm.graphTraversal.init(egamaxflow.structure.stack.create());
 
 
   let graph = generator.create(graphSettings.NUMBER_OF_VERTICES, graphSettings.MAX_CAPACITY).run();
@@ -116,7 +117,7 @@ $(document).ready(() => {
 
       // Calculate max flow
       let maxFlow = graph.source.outgoingArcs.reduce((sum, arc) => {
-        return sum + arc.flow;
+        return sum + arc.flow - arc.reverse.flow;
       }, 0);
 
       outputList.append('<li>Maximum flow = ' + maxFlow + '</li>');
@@ -145,8 +146,47 @@ $(document).ready(() => {
         });
 
       } else if (activeAlgorithm === 'Preflow-Push') {
+        // Update vertex labels and reset vertex colors
         graph.vertices.forEach((vertex) => {
           vertex.label = vertex.id + ' (d = ' + vertex.distance + ', e = ' + vertex.excess + ')';
+          vertex.color = sigmaSettings.NODE_COLOR;
+        });
+
+        // Reset arc colors
+        graph.arcs.forEach((arc) => {
+          arc.color = sigmaSettings.EDGE_COLOR;
+        });
+
+        // Highlight active element
+        switch (output.step) {
+          case 'push':
+            output.activeElement.color = sigmaSettings.EDGE_ACTIVE_COLOR;
+            break;
+          case 'relabel':
+            output.activeElement.color = sigmaSettings.NODE_ACTIVE_COLOR;
+            break;
+          default:
+        }
+
+        // Mark saturated cut
+        let dfsTraversal = dfs(graph, graph.source);
+        let dfsTraversalResult = dfsTraversal.next();
+
+        while (!dfsTraversalResult.done) {
+          dfsTraversalResult.value.currentVertex.outgoingArcs.filter((arc) => {
+            return arc.capacity === 0;
+          }).forEach((arc) => {
+            arc.color = sigmaSettings.EDGE_HIGHLIGHT_COLOR;
+          });
+
+          dfsTraversalResult = dfsTraversal.next();
+        }
+
+        // Reset dfs traversal flags
+        graph.vertices.forEach((vertex) => {
+          vertex.currentArcIndex = -1;
+          vertex.seen = false;
+          vertex.finished = false;
         });
       } else {
         // Highlight flow augmenting path

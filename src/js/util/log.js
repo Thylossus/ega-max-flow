@@ -22,18 +22,34 @@ const LEVEL_ERROR = 1;
       let currentGroup = this.groups.top();
       currentGroup.addEntry(entry);
 
+      if (this.print && level === LEVEL_LOG) {
+        console.log(value); 
+      }
+
       return entry;
     }
 
     warn(value) {
+      if (this.print) {
+        console.warn(value);
+      }
+
       return this.log(value, LEVEL_WARN);
     }
 
     error(value) {
+      if (this.print) {
+        console.error(value);
+      }
+
       return this.log(value, LEVEL_ERROR);
     }
 
     group(name) {
+      if (this.print) {
+        console.group(name);
+      }
+
       let group = new LogGroup(name);
       let currentGroup = this.groups.top();
 
@@ -45,6 +61,10 @@ const LEVEL_ERROR = 1;
     }
 
     groupEnd() {
+      if (this.print) {
+        console.groupEnd();
+      }
+
       if (this.groups.length !== 1) {
         return this.groups.pop();
       }

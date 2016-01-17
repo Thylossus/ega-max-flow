@@ -1,5 +1,6 @@
 const graphTraversal = require('./graphTraversal');
 const queue = require('../structure/queue');
+const log = require('../util/log');
 
 (function() {
   'use strict';
@@ -42,9 +43,9 @@ const queue = require('../structure/queue');
     });
   }
 
-  function init(graph) {
+  function init(graph, logger) {
 
-    console.group('init');
+    logger.group('init');
 
     let S = queue.create();
     let a = graph.source.nextArc();
@@ -52,10 +53,10 @@ const queue = require('../structure/queue');
 
     // Step 1: set flow to 0 for each arc
     // -> finished (this is the default flow value)
-    console.log('set flow to 0 for each arc');
+    logger.log('set flow to 0 for each arc');
 
     // Step 2: create a staturated cut between the source and the rest of the graph and add the nodes reachable from s to S
-    console.group('create a saturated cut between the source and the rest of the graph');
+    logger.group('create a saturated cut between the source and the rest of the graph');
     while (a !== null) {
       flow = a.capacity;
       a.increaseFlow(flow);
@@ -63,60 +64,67 @@ const queue = require('../structure/queue');
 
       S.push(a.to);
 
-      console.log('push', flow, 'from', a.from.id, 'to', a.to.id, 'and add', a.to.id, 'to S');
+      logger.log(`push, ${flow} from ${a.from.id} to ${a.to.id} and add ${a.to.id} to S`);
 
       a = graph.source.nextArc();
     }
-    console.groupEnd();
+    logger.groupEnd();
 
     // Reset the source vertex in order to reset the current arc index
     graph.source.reset();
 
     // Step 3: compute a valid distance labeling by calculating the distances from t
-    console.log('compute a valid distance labeling');
+    logger.log('compute a valid distance labeling');
     distanceFromSink(graph);
 
     // Step 4: set d(s) = |V| (this does not violate the valid distance labeling because all of s's outgoing arcs have capacity 0 due to step 2)
-    console.log('set d(s) = |V|');
+    logger.log('set d(s) = |V|');
     graph.source.distance = graph.vertices.length;
 
     // Step 5: reset all current arc indizes
     // -> finished by resetting all arcs in distanceFromSink()
 
-    console.groupEnd();
+    logger.groupEnd();
 
     return S;
   }
 
-  function push(graph, a, v, S) {
+  function push(graph, a, v, S, logger) {
     let w = a.to;
     let flow = 0;
+
+    logger.group('push');
 
     // Step 3.1: add w to set of active vertices
     if (!w.equals(graph.source) && !w.equals(graph.sink) && w.excess === 0) {
       // Add w to S because after this step w will be active
       S.push(w);
+      logger.log(`add ${w.id} to S`);
     }
 
     // Step 3.2: increase flow on a by minimum of excess and residual capacity
     flow = Math.min(a.capacity, v.excess);
     a.increaseFlow(flow);
+    logger.log(`push ${flow} from ${a.from.id} to ${a.to.id}`);
+
 
     // Step 3.3: increase excess of w and decrease excess of v accordingly
     w.excess += flow;
     v.excess -= flow;
+    logger.log(`increase excess of ${w.id} and decrease excess of ${v.id} by ${flow}`);
 
     // Step 3.4: remove v from S if it is not active any more
     if (v.excess === 0) {
       // Since S is a queue, v is on its front because v was obtained via S.top()
       S.pop();
+      logger.log(`remove ${v.id} from S because its not active any more`);
     }
 
-    console.log('push', flow, 'from', a.from.id, 'to', a.to.id);
+    logger.groupEnd();
   }
 
-  function relabel(graph, a, v) {
-    console.log('relabel', v.id);
+  function relabel(graph, a, v, logger) {
+    logger.group(`relabel ${v.id}`);
 
     // Step 4.1: Find minimum neighbor distance TODO: check if this violates the complexity constraints
     let dMin = v.outgoingArcs.reduce((min, arc) => {
@@ -127,25 +135,39 @@ const queue = require('../structure/queue');
 
       return min;
     }, Infinity);
+    logger.log(`minimum distance of adjecent vertices is ${dMin}`);
 
     // Step 4.2: Set distance of v to dMin + 1
     v.distance = dMin + 1;
+    logger.log(`set distance of ${v.id} to ${v.distance}`);
 
     // Step 4.3: Reset current arc counter of v
     v.currentArcIndex = -1;
+    logger.log(`reset current arc counter of ${v.id}`);
+    logger.groupEnd();
   }
 
   function* iterator(graph) {
-    let output = {};
-    let S = init(graph);
+    // Only print if console.group is supported
+    let logger = log.create({print: !!console.group});
+    let output = {
+      flow: {},
+      preflow: [],
+      logger: logger,
+      step: '',
+      activeElement: null
+    };
+    let S = init(graph, logger);
 
     // The active vertex
     let v;
     // The current arc
     let a;
 
+    // Stop after intialization
+    yield output;
+
     while (!S.empty) {
-      console.log(S.toString());
       // Step 1: choose active node v from S
       v = S.top();
 
@@ -158,10 +180,15 @@ const queue = require('../structure/queue');
 
       if (a && a.isAdmissable) {
         // Step 3: push
-        push(graph, a, v, S);
+        push(graph, a, v, S, logger);
+        output.flow[a.id] = a.flow;
+        output.step = 'push';
+        output.activeElement = a;
       } else {
         // Step 4: relabel
-        relabel(graph, a, v);
+        relabel(graph, a, v, logger);
+        output.step = 'relabel';
+        output.activeElement = v;
       }
 
       yield output;
@@ -174,8 +201,17 @@ const queue = require('../structure/queue');
     return iterator(graph);
   };
 
-  exports.run = () => {
+  exports.run = (iterator) => {
+    let output = null;
+    let result = iterator.next();
 
+    while (!result.done) {
+      output = result.value;
+      result = iterator.next();
+
+    }
+
+    return output;
   };
 
 }());
