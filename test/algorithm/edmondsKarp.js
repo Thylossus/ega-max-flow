@@ -34,21 +34,23 @@ describe('Edmonds Karp', () => {
       expect(result.value).to.be.an('object');
       expect(result.value).to.have.property('flowAugmentingPath').that.is.an('array');
       expect(result.value).to.have.property('flow').that.is.an('object');
+      expect(result.value).to.have.property('logger').that.is.an('object');
     });
 
   });
 
   describe('#run', () => {
 
-    // it('should return a flow', () => {
-    //   let g = generator.create(10, 100).run();
-    //   let iterator = edmondsKarp.init(g);
-    //   let output = fordFulkerson.run(iterator);
-    //
-    //   expect(output).to.be.an('object');
-    //   expect(output).to.have.property('flowAugmentingPath').that.is.an('array');
-    //   expect(output).to.have.property('flow').that.is.an('object');
-    // });
+    it('should return a flow', () => {
+      let g = generator.create(10, 100).run();
+      let iterator = edmondsKarp.init(g);
+      let output = edmondsKarp.run(iterator);
+
+      expect(output).to.be.an('object');
+      expect(output).to.have.property('flowAugmentingPath').that.is.an('array');
+      expect(output).to.have.property('flow').that.is.an('object');
+      expect(output).to.have.property('logger').that.is.an('object');
+    });
 
   });
 

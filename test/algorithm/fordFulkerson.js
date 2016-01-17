@@ -34,6 +34,7 @@ describe('Ford Fulkerson', () => {
       expect(result.value).to.be.an('object');
       expect(result.value).to.have.property('flowAugmentingPath').that.is.an('array');
       expect(result.value).to.have.property('flow').that.is.an('object');
+      expect(result.value).to.have.property('logger').that.is.an('object');
     });
 
   });
@@ -48,6 +49,7 @@ describe('Ford Fulkerson', () => {
       expect(output).to.be.an('object');
       expect(output).to.have.property('flowAugmentingPath').that.is.an('array');
       expect(output).to.have.property('flow').that.is.an('object');
+      expect(output).to.have.property('logger').that.is.an('object');
     });
 
   });
