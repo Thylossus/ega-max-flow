@@ -39,7 +39,8 @@ $(document).ready(() => {
       defaultEdgeLabelSize: sigmaSettings.EDGE_LABEL_SIZE,
       defaultEdgeType: sigmaSettings.EDGE_TYPE,
       defaultEdgeColor: sigmaSettings.EDGE_COLOR,
-      drawEdgeLabels: sigmaSettings.EDGE_DISPLAY_LABELS
+      drawEdgeLabels: sigmaSettings.EDGE_DISPLAY_LABELS,
+      sideMargin: 30
     }
   });
 
