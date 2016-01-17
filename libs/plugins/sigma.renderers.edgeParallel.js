@@ -86,8 +86,6 @@
       y: -direction.x / direction.y
     };
 
-    // TODO: some labels on diagonal arcs are still incorrect
-
     if (direction.x === 0 || direction.y === 0) {
       orthDirection.y = direction.x;
       orthDirection.x = direction.y;
