@@ -147,15 +147,46 @@ $(document).ready(() => {
         });
 
       } else if (activeAlgorithm === 'Preflow-Push') {
-        // Update vertex labels and reset vertex colors
-        graph.vertices.forEach((vertex) => {
-          vertex.label = vertex.id + ' (d = ' + vertex.distance + ', e = ' + vertex.excess + ')';
-          vertex.color = sigmaSettings.NODE_COLOR;
-        });
-
         // Reset arc colors
         graph.arcs.forEach((arc) => {
           arc.color = sigmaSettings.EDGE_COLOR;
+        });
+
+        // Mark saturated cut
+        let dfsTraversal = dfs(graph, graph.source);
+        let dfsTraversalResult = dfsTraversal.next();
+        let reachableFromS = {};
+
+        // Reset the current arc index for all vertices in order to perform a proper dfs
+        graph.vertices.forEach((vertex) => {
+          vertex.currentArcIndex = -1;
+        });
+
+        while (!dfsTraversalResult.done) {
+          console.warn(dfsTraversalResult.value.currentVertex.id);
+          reachableFromS[dfsTraversalResult.value.currentVertex.id] = dfsTraversalResult.value.currentVertex;
+
+          dfsTraversalResult = dfsTraversal.next();
+        }
+
+        // Update vertex labels and set vertex colors
+        graph.vertices.forEach((vertex) => {
+          vertex.label = vertex.id + ' (d = ' + vertex.distance + ', e = ' + vertex.excess + ')';
+          switch (vertex.type) {
+            case graphSettings.VERTEX_TYPE.SOURCE:
+              vertex.color = sigmaSettings.SOURCE_COLOR;
+              break;
+            case graphSettings.VERTEX_TYPE.SINK:
+              vertex.color = sigmaSettings.SINK_COLOR;
+              break;
+            default:
+              if (!reachableFromS[vertex.id]) {
+                vertex.color = sigmaSettings.NODE_UNREACHABLE_COLOR;
+              } else {
+                vertex.color = sigmaSettings.NODE_COLOR;
+              }
+          }
+
         });
 
         // Highlight active element
@@ -167,20 +198,6 @@ $(document).ready(() => {
             output.activeElement.color = sigmaSettings.NODE_ACTIVE_COLOR;
             break;
           default:
-        }
-
-        // Mark saturated cut
-        let dfsTraversal = dfs(graph, graph.source);
-        let dfsTraversalResult = dfsTraversal.next();
-
-        while (!dfsTraversalResult.done) {
-          dfsTraversalResult.value.currentVertex.outgoingArcs.filter((arc) => {
-            return arc.capacity === 0;
-          }).forEach((arc) => {
-            arc.color = sigmaSettings.EDGE_HIGHLIGHT_COLOR;
-          });
-
-          dfsTraversalResult = dfsTraversal.next();
         }
 
         // Reset dfs traversal flags
