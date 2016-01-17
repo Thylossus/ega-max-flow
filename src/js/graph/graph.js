@@ -19,7 +19,13 @@
     reset() {
       this.arcs.map((arc) => {return arc.reset();});
 
-      this.vertices.map((vertex) => {return vertex.reset();});
+      this.vertices.map((vertex) => {
+        vertex = vertex.reset();
+        // Also reset the incoming and outgoing arc lists manually
+        vertex.outgoingArcList = null;
+        vertex.incomingArcList = null;
+        return vertex;
+      });
 
       return this;
     }
