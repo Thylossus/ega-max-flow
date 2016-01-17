@@ -88,7 +88,7 @@
     context.translate(x, y);
     context.rotate(angle);
 
-    if (source.label > target.label || dX === 0) {
+    if ((parseInt(source.id.substr(1)) > parseInt(target.id.substr(1)) && angle >= 0) || (parseInt(source.id.substr(1)) < parseInt(target.id.substr(1)) && angle < 0) || dX === 0) {
       context.fillText(
         edge.label,
         0,
