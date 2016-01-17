@@ -1,12 +1,17 @@
 const graphTraversal = require('./graphTraversal');
 const stack = require('../structure/stack');
+const log = require('../util/log');
 
 (function() {
   'use strict';
 
-  function dfs(graph) {
+  function dfs(graph, logger) {
+    logger.group('perform depth first search');
+
+    logger.log('initialize graph traversal');
     let s = stack.create();
     let traverse = graphTraversal.init(s, graph);
+    logger.log(`run graph traversal until the sink (${graph.sink.id}) is found`);
     let output = graphTraversal.run(traverse, graph.sink);
     let result = {
       flowAugmentingPath: output.arcs,
@@ -14,22 +19,49 @@ const stack = require('../structure/stack');
     };
     let last = result.flowAugmentingPath[result.flowAugmentingPath.length - 1];
 
-    return last && last.to.equals(graph.sink) ? result : null;
+    if (!(last && last.to.equals(graph.sink))) {
+      logger.log('did not find a flow augmenting path');
+      logger.groupEnd();
+      // Terminate early if no flow augmenting path was found
+      return null;
+    }
+
+    logger.log(`found a flow augmenting path with a capacity of ${graph.sink.parentArcMinCapacity}`)
+
+    logger.groupEnd();
+
+    return result;
   }
 
   function* iterator(graph) {
+    // Only print if console.group is supported
+    let logger = log.create({print: !!console.group});
     let dfsResult = null;
     let flow = {};
     let output = {
       flowAugmentingPath: [],
-      flow: flow
+      flow: flow,
+      logger: logger
     };
 
-    while (dfsResult = dfs(graph)) {
+    logger.log('initialized the graph with the zero flow');
+
+    while (dfsResult = dfs(graph, logger)) {
+      logger.group('saturate arcs along the flow augmenting path');
+
       dfsResult.flowAugmentingPath.forEach((arc) => {
+        logger.group(`saturate ${arc.from.id} -> ${arc.to.id}`);
+
+        logger.log(`current flow: ${arc.flow}`);
+        logger.log(`increase by: ${dfsResult.minCapacity}`);
+
         // Set flow
         arc.increaseFlow(dfsResult.minCapacity);
         flow[arc.id] = arc.flow;
+
+        logger.log(`new flow: ${arc.flow - dfsResult.minCapacity} + ${dfsResult.minCapacity} = ${arc.flow}`);
+
+        logger.groupEnd();
       });
 
       // Reset vertices
@@ -40,8 +72,12 @@ const stack = require('../structure/stack');
       output.flowAugmentingPath = dfsResult.flowAugmentingPath;
       output.flow = flow;
 
+      logger.groupEnd();
+
       yield output;
     }
+
+    logger.log('terminate because there is no flow-augmenting path')
 
     return output;
   }
@@ -57,7 +93,6 @@ const stack = require('../structure/stack');
     while (!result.done) {
       output = result.value;
       result = iterator.next();
-
     }
 
     return output;
