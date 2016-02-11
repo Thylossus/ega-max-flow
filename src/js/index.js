@@ -18,40 +18,26 @@ $(document).ready(() => {
   const dfs = egamaxflow.algorithm.graphTraversal.init(egamaxflow.structure.stack.create());
 
 
-  let graph = generator.create(graphSettings.NUMBER_OF_VERTICES, graphSettings.MAX_CAPACITY).run();
-  graph.nodes = graph.vertices;
-  graph.edges = graph.arcs;
+  let graph;
 
   let activeAlgorithm;
   let iterator;
   let log = [];
 
-  // console.log('arcs', graph.arcs.map((arc) => {return arc.id + '(' + arc.from.id + ' -' + arc.capacity + '-> ' + arc.to.id + ')'}));
-
-  let s = new sigma({
-    graph: graph,
-    renderer: {
-      container: document.getElementById('container'),
-      type: 'canvas'
-    },
-    settings: {
-      edgeLabelSize: 'fixed',
-      defaultEdgeLabelSize: sigmaSettings.EDGE_LABEL_SIZE,
-      defaultEdgeType: sigmaSettings.EDGE_TYPE,
-      defaultEdgeColor: sigmaSettings.EDGE_COLOR,
-      drawEdgeLabels: sigmaSettings.EDGE_DISPLAY_LABELS,
-      sideMargin: 30
-    }
-  });
+  // Sigma.js instance
+  let s;
 
   // Create references to UI elements
   let btnSelect = $('#select');
   let btnNext = $('#next');
   let btnPlay = $('#play');
   let btnPlayLabel = btnPlay.children('span').first();
-  let inputSpeed = $('speed');
+  let inputSpeed = $('#speed');
   let inputAlgorithm = $('#algorithm');
   let lblAlgorithm = $('#labelAlgorithm');
+  let inputGraphSettingsVertices = $('#graphSettingsVertices');
+  let inputGraphSettingsMaxCapacity = $('#graphSettingsMaxCapacity');
+  let inputGraphSettingsOrdered = $('#graphSettingsOrdered');
   let containerOutput = $('#output');
   let outputList = $('#output > ul');
   let algorithmSelection = $('#algorithmSelection');
@@ -59,6 +45,35 @@ $(document).ready(() => {
 
   let playing = false;
   let speed = 1000;
+
+  let init = function init(options) {
+    options = options || {};
+    options.numberOfVertices = options.numberOfVertices || graphSettings.NUMBER_OF_VERTICES;
+    options.maxCapacity = options.maxCapacity || graphSettings.MAX_CAPACITY;
+
+    graph =  generator.create(options.numberOfVertices, options.maxCapacity, options.ordered).run();
+    graph.nodes = graph.vertices;
+    graph.edges = graph.arcs;
+
+    s = new sigma({
+      graph: graph,
+      renderer: {
+        container: document.getElementById('container'),
+        type: 'canvas'
+      },
+      settings: {
+        edgeLabelSize: 'fixed',
+        defaultEdgeLabelSize: sigmaSettings.EDGE_LABEL_SIZE,
+        defaultEdgeType: sigmaSettings.EDGE_TYPE,
+        defaultEdgeColor: sigmaSettings.EDGE_COLOR,
+        drawEdgeLabels: sigmaSettings.EDGE_DISPLAY_LABELS,
+        sideMargin: 30
+      }
+    });
+  };
+
+  // Initialize
+  init();
 
   let doIteration = function doIteration() {
     let result = iterator.next();
@@ -70,6 +85,7 @@ $(document).ready(() => {
       lblAlgorithm.text('Algorithm');
       algorithmCtrl.hide();
       algorithmSelection.show();
+      enableGraphSettings();
 
       // Highlight all arcs with flow > 0
       graph.arcs.forEach((arc) => {
@@ -129,7 +145,7 @@ $(document).ready(() => {
         });
 
         while (!dfsTraversalResult.done) {
-          console.warn(dfsTraversalResult.value.currentVertex.id);
+          // console.warn(dfsTraversalResult.value.currentVertex.id);
           reachableFromS[dfsTraversalResult.value.currentVertex.id] = dfsTraversalResult.value.currentVertex;
 
           dfsTraversalResult = dfsTraversal.next();
@@ -220,6 +236,18 @@ $(document).ready(() => {
     element.removeAttr('disabled');
   };
 
+  let disableGraphSettings = function disableGraphSettings() {
+    disable(inputGraphSettingsVertices);
+    disable(inputGraphSettingsMaxCapacity);
+    disable(inputGraphSettingsOrdered);
+  };
+
+  let enableGraphSettings = function enableGraphSettings() {
+    enable(inputGraphSettingsVertices);
+    enable(inputGraphSettingsMaxCapacity);
+    enable(inputGraphSettingsOrdered);
+  };
+
   let togglePlayPauseBtn = function togglePlayPauseBtn() {
     if (btnPlayLabel.hasClass('glyphicon-play')) {
       btnPlayLabel.removeClass('glyphicon-play');
@@ -246,6 +274,7 @@ $(document).ready(() => {
     algorithmCtrl.show();
     containerOutput.show();
     outputList.children('li').remove();
+    disableGraphSettings();
 
     // Reset log
     log = [];
@@ -293,6 +322,7 @@ $(document).ready(() => {
         if (finished) {
           enable(btnNext);
           enable(inputSpeed);
+          togglePlayPauseBtn();
           playing = false;
         }
 
@@ -318,6 +348,23 @@ $(document).ready(() => {
   inputSpeed.on('change', () => {
     speed = inputSpeed.val();
     console.log(`Changed speed to ${speed} ms.`);
+  });
+
+  $('.graph-settings').on('change', () => {
+    let numberOfVertices = inputGraphSettingsVertices.val();
+    let maxCapacity = inputGraphSettingsMaxCapacity.val();
+    let ordered = inputGraphSettingsOrdered.prop('checked');
+
+    // Delete old graph
+    s.graph.clear();
+    s.graph.kill();
+    $('#container').children().remove();
+
+    init({
+      numberOfVertices: numberOfVertices,
+      maxCapacity: maxCapacity,
+      ordered: ordered
+    });
   });
 
 });

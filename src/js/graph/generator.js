@@ -12,9 +12,15 @@ const sigmaConfig = require('../../../config/sigma');
   'use strict';
 
   class Generator {
-    constructor(numberOfVertices, maxCapacity) {
+    constructor(numberOfVertices, maxCapacity, ordered) {
       this.numberOfVertices = numberOfVertices;
       this.maxCapacity = maxCapacity;
+      if (ordered === undefined) {
+        this.ordered = graphConfig.VERTICES_ORDERED;
+      } else {
+        this.ordered = ordered;
+      }
+
     }
 
     run() {
@@ -24,8 +30,8 @@ const sigmaConfig = require('../../../config/sigma');
       let sink;
 
       let vertices = quadrants.map((quadrant) => {
-        let x = graphConfig.VERTICES_ORDERED ? quadrant.x1 : random(quadrant.x1, quadrant.x2);
-        let y = graphConfig.VERTICES_ORDERED ? quadrant.y1 : random(quadrant.y1, quadrant.y2);
+        let x = this.ordered ? quadrant.x1 : random(quadrant.x1, quadrant.x2);
+        let y = this.ordered ? quadrant.y1 : random(quadrant.y1, quadrant.y2);
         let v = vertex.create(x, y);
 
         if (quadrant.id === 0) {
