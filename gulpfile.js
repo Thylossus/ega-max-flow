@@ -23,7 +23,7 @@ gulp.task('webpack', function () {
 });
 
 gulp.task('copy', function () {
-  gulp.src(['./src/index.html', './src/js/index.js', './libs/**/*.js'])
+  gulp.src(['./src/index.html', './src/js/index.js', './libs/**/*.js', './libs/**/*.css', './libs/**/*.eot', './libs/**/*.svg', './libs/**/*.ttf', './libs/**/*.woff', './libs/**/*.woff2'])
     .pipe(gulp.dest('./dist'));
 });
 

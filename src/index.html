@@ -2,6 +2,10 @@
 <html>
   <head>
     <title>EGA Max-Flow Problem</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="./bootstrap/css/bootstrap.css" />
     <style type="text/css">
       html {
         height: 100%;
@@ -49,8 +53,14 @@
         padding: 20px;
         display: none;
       }
-      #next {
+
+      #algorithmCtrl {
         display: none;
+      }
+
+      #algorithmCtrl #speed {
+        width: 60px;
+        text-align: center;
       }
     </style>
   </head>
@@ -58,16 +68,28 @@
     <div id="wrapper">
       <div id="header">
         <h1>EGA - Max-Flow Problem</h1>
-        <div>
-          <label for="algorithm" id="labelAlgorithm">Algorithm</label>
-          <select name="algorithm" id="algorithm">
-            <option value="1">Ford-Fulkerson</option>
-            <option value="2">Edmonds-Karp</option>
-            <option value="3">Dinic</option>
-            <option value="4">Preflow-Push</option>
-          </select>
-          <button id="start">Start</button>
-          <button id="next">Next</button>
+        <div id="algorithmSelection">
+          <form class="form-inline">
+            <label for="algorithm" id="labelAlgorithm">Algorithm</label>
+            <select name="algorithm" id="algorithm" class="form-control">
+              <option value="1">Ford-Fulkerson</option>
+              <option value="2">Edmonds-Karp</option>
+              <option value="3">Dinic</option>
+              <option value="4">Preflow-Push</option>
+            </select>
+            <button class="btn btn-primary" id="select">Select</button>
+          </form>
+        </div>
+
+        <div id="algorithmCtrl">
+          <form class="form-inline">
+            <div class="form-group">
+              <label for="speed">Speed [ms]</label>
+              <input class="form-control" type="text" id="speed" value="1000" size="4"/>
+            </div>
+            <button class="btn btn-default" id="play"><span class="glyphicon glyphicon-play"></span></button>
+            <button class="btn btn-default" id="next"><span class="glyphicon glyphicon-step-forward"></span></button>
+          </form>
         </div>
       </div>
       <div id="content">
@@ -79,6 +101,7 @@
       </div>
     </div>
     <script src="./jquery-2.1.4.min.js"></script>
+    <script src="./bootstrap/js/bootstrap.js"></script>
     <script src="./sigma.js"></script>
     <script src="./plugins/settings.js"></script>
     <script src="./plugins/sigma.canvas.edges.labels.def.js"></script>

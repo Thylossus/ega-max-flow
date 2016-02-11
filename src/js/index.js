@@ -45,58 +45,22 @@ $(document).ready(() => {
   });
 
   // Create references to UI elements
-  let btnStart = $('#start');
+  let btnSelect = $('#select');
   let btnNext = $('#next');
+  let btnPlay = $('#play');
+  let btnPlayLabel = btnPlay.children('span').first();
+  let inputSpeed = $('speed');
   let inputAlgorithm = $('#algorithm');
   let lblAlgorithm = $('#labelAlgorithm');
   let containerOutput = $('#output');
   let outputList = $('#output > ul');
+  let algorithmSelection = $('#algorithmSelection');
+  let algorithmCtrl = $('#algorithmCtrl');
 
-  btnStart.on('click', (e) => {
-    e.preventDefault();
+  let playing = false;
+  let speed = 1000;
 
-    let algorithm = inputAlgorithm.val();
-
-    if (!algorithms.hasOwnProperty(algorithm)) {
-      throw new Error('Unsupported algorithm');
-    }
-
-    // Update UI
-    inputAlgorithm.hide();
-    lblAlgorithm.text(algorithmNames[algorithm]);
-    btnStart.hide();
-    btnNext.show();
-    containerOutput.show();
-    outputList.children('li').remove();
-
-    // Reset log
-    log = [];
-
-    // Reset all arc colors
-    graph.arcs.forEach((arc) => {arc.color = sigmaSettings.EDGE_COLOR;});
-
-    // Reset graph
-    graph.reset();
-    s.graph.clear();
-    s.graph.read(graph);
-    s.refresh();
-
-    // Set active algorithm
-    activeAlgorithm = algorithmNames[algorithm]
-
-    // Initialize algorithm
-    algorithm = algorithms[algorithm];
-    iterator = algorithm.init(graph);
-
-  });
-
-  btnNext.on('click', (e) => {
-    e.preventDefault();
-
-    if (!iterator) {
-      throw new Error('Iterator undefined');
-    }
-
+  let doIteration = function doIteration() {
     let result = iterator.next();
     let output = result.value;
 
@@ -104,8 +68,8 @@ $(document).ready(() => {
       // Update UI
       inputAlgorithm.show();
       lblAlgorithm.text('Algorithm');
-      btnNext.hide();
-      btnStart.show();
+      algorithmCtrl.hide();
+      algorithmSelection.show();
 
       // Highlight all arcs with flow > 0
       graph.arcs.forEach((arc) => {
@@ -123,6 +87,8 @@ $(document).ready(() => {
 
       outputList.append('<li>Maximum flow = ' + maxFlow + '</li>');
       outputList.append('<li>All arcs with flow > 0 are highlighted.</li>');
+
+      return true;
     } else {
       if (activeAlgorithm === 'Dinic') {
         // Highlight level graph
@@ -237,11 +203,121 @@ $(document).ready(() => {
 
     }
 
+    return false;
+  };
 
-    // Redraw
+  let redraw = function redraw() {
     s.graph.clear();
     s.graph.read(graph);
     s.refresh();
+  };
+
+  let disable = function disable(element) {
+    element.attr('disabled', 'disabled');
+  };
+
+  let enable = function enable(element) {
+    element.removeAttr('disabled');
+  };
+
+  let togglePlayPauseBtn = function togglePlayPauseBtn() {
+    if (btnPlayLabel.hasClass('glyphicon-play')) {
+      btnPlayLabel.removeClass('glyphicon-play');
+      btnPlayLabel.addClass('glyphicon-pause');
+    } else {
+      btnPlayLabel.removeClass('glyphicon-pause');
+      btnPlayLabel.addClass('glyphicon-play');
+    }
+  };
+
+  btnSelect.on('click', (e) => {
+    e.preventDefault();
+
+    let algorithm = inputAlgorithm.val();
+
+    if (!algorithms.hasOwnProperty(algorithm)) {
+      throw new Error('Unsupported algorithm');
+    }
+
+    // Update UI
+    inputAlgorithm.hide();
+    lblAlgorithm.text(algorithmNames[algorithm]);
+    algorithmSelection.hide();
+    algorithmCtrl.show();
+    containerOutput.show();
+    outputList.children('li').remove();
+
+    // Reset log
+    log = [];
+
+    // Reset all arc colors
+    graph.arcs.forEach((arc) => {arc.color = sigmaSettings.EDGE_COLOR;});
+
+    // Reset graph
+    graph.reset();
+    s.graph.clear();
+    s.graph.read(graph);
+    s.refresh();
+
+    // Set active algorithm
+    activeAlgorithm = algorithmNames[algorithm]
+
+    // Initialize algorithm
+    algorithm = algorithms[algorithm];
+    iterator = algorithm.init(graph);
+
+  });
+
+  btnPlay.on('click', (e) => {
+    e.preventDefault();
+
+    if (!iterator) {
+      throw new Error('Iterator undefined');
+    }
+
+    togglePlayPauseBtn();
+
+    if (playing) {
+      enable(btnNext);
+      enable(inputSpeed);
+      playing = false;
+    } else {
+      disable(btnNext);
+      disable(inputSpeed);
+      playing = true;
+
+      let timer = setInterval(() => {
+        let finished = doIteration();
+        redraw();
+
+        if (finished) {
+          enable(btnNext);
+          enable(inputSpeed);
+          playing = false;
+        }
+
+        if (!playing) {
+          clearInterval(timer);
+        }
+      }, speed);
+    }
+
+  });
+
+  btnNext.on('click', (e) => {
+    e.preventDefault();
+
+    if (!iterator) {
+      throw new Error('Iterator undefined');
+    }
+
+    doIteration();
+    redraw();
+  });
+
+  inputSpeed.on('change', () => {
+    speed = inputSpeed.val();
+    console.log(`Changed speed to ${speed} ms.`);
   });
 
 });
