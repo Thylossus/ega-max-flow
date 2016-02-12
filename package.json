@@ -4,7 +4,8 @@
   "description": "Assignment for the lecture \"Efficient Graph Algorithms\" at TU Darmstadt.",
   "main": "index.js",
   "scripts": {
-    "test": "mocha ./test/**/*.js"
+    "test": "mocha ./test/**/*.js",
+    "start": "node ./src/js/testenv/index.js"
   },
   "repository": {
     "type": "git",
