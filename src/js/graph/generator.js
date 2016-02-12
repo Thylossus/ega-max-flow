@@ -107,7 +107,7 @@ const sigmaConfig = require('../../../config/sigma');
     }
   }
 
-  exports.create = (numberOfVertices, maxCapacity) => {
-    return new Generator(numberOfVertices, maxCapacity);
+  exports.create = (numberOfVertices, maxCapacity, ordered) => {
+    return new Generator(numberOfVertices, maxCapacity, ordered);
   };
 })();
