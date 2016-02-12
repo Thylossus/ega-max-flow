@@ -88,6 +88,12 @@
           </form>
         </div>
 
+        <div>
+          <form class="form-inline">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#testEnvModal">Run Test Environment</button>
+          </form>
+        </div>
+
         <div id="algorithmSelection">
           <form class="form-inline">
             <label for="algorithm" id="labelAlgorithm">Algorithm</label>
@@ -117,6 +123,40 @@
         <div id="output">
           <h3>Output</h3>
           <ul><ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="testEnvModal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            Run Test Environment
+          </div>
+          <div class="modal-body">
+            <p>
+              Specify number of instances, number of vertices, and the maximum capacity for the test environment.
+              Then press "Run" to start the execution in the test environment.
+            </p>
+            <form>
+              <div class="form-group">
+                <label for="testEnvInstances">Instances</label>
+                <input type="text" name="testEnvInstances" id="testEnvInstances" class="form-control" value="10" />
+              </div>
+              <div class="form-group">
+                <label for="testEnvVertices">Vertices</label>
+                <input type="text" name="testEnvVertices" id="testEnvVertices" class="form-control" value="100" />
+              </div>
+              <div class="form-group">
+                <label for="testEnvMaxCapacity">Max. Capacity</label>
+                <input type="text" name="testEnvMaxCapacity" id="testEnvMaxCapacity" class="form-control" value="1000" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary">Run</button>
+          </div>
         </div>
       </div>
     </div>
