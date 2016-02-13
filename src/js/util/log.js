@@ -1,5 +1,7 @@
 const stack = require('../structure/stack');
+const repeat = require('lodash/string/repeat');
 
+const EOL = require('os').EOL;
 const LEVEL_LOG = 3;
 const LEVEL_WARN = 2;
 const LEVEL_ERROR = 1;
@@ -12,8 +14,8 @@ const LEVEL_ERROR = 1;
       this.print = options.print || false;
       this.groups = stack.create();
 
-      let rootGroup = new LogGroup();
-      this.groups.push(rootGroup);
+      this.rootGroup = new LogGroup();
+      this.groups.push(this.rootGroup);
     }
 
     log(value, level) {
@@ -23,7 +25,7 @@ const LEVEL_ERROR = 1;
       currentGroup.addEntry(entry);
 
       if (this.print && level === LEVEL_LOG) {
-        console.log(value); 
+        console.log(value);
       }
 
       return entry;
@@ -69,6 +71,10 @@ const LEVEL_ERROR = 1;
         return this.groups.pop();
       }
     }
+
+    toString() {
+      return this.rootGroup.toString(0);
+    }
   }
 
   class LogGroup {
@@ -80,12 +86,34 @@ const LEVEL_ERROR = 1;
     addEntry(logEntry) {
       this.entries.push(logEntry);
     }
+
+    toString(depth) {
+      depth = depth === undefined ? 0 : depth;
+      let tabs = repeat('\t', depth);
+
+
+      let output = this.entries.map((entry) => {
+        return [tabs, entry.toString(depth + 1)].join('');
+      });
+
+      if (this.name !== undefined) {
+        output = [`${this.name}:`].concat(output);
+      }
+
+
+      return output.join(EOL);
+    }
   }
 
   class LogEntry {
     constructor(value, level) {
       this.value = value;
       this.level = level;
+    }
+
+    toString() {
+      // TODO: include level?
+      return this.value;
     }
   }
 

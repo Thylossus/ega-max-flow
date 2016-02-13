@@ -4,6 +4,7 @@ const chai = require('chai');
 const expect = chai.expect;
 
 const log = require('../../src/js/util/log');
+const EOL = require('os').EOL;
 
 describe('Log', () => {
 
@@ -218,6 +219,58 @@ describe('Log', () => {
 
         expect(lastEntry).to.be.equal(logEntry);
       });
+    });
+
+    describe('#toString', () => {
+
+      it('should return a string', () => {
+        let logger = log.create();
+        let value = 'test';
+
+        logger.log(value);
+
+        expect(logger.toString()).to.be.a('string');
+      });
+
+      it('should return the message of a log entry', () => {
+        let logger = log.create();
+        let value = 'test';
+
+        let logEntry = logger.log(value);
+
+        expect(logger.toString()).to.be.equal(value);
+      });
+
+      it('should return a group', () => {
+        let logger = log.create();
+
+        let name = 'test';
+        let value = 'entry';
+        logger.group(name);
+        logger.log(value);
+        logger.groupEnd();
+
+        expect(logger.toString()).to.be.equal(`${name}:${EOL}\t${value}`);
+      });
+
+      it('should support complex logs', () => {
+        let logger = log.create();
+
+        logger.log('first');
+        logger.log('second');
+        logger.group('group1');
+        logger.log('third');
+        logger.group('group2');
+        logger.log('fourth');
+        logger.error('fifth');
+        logger.groupEnd();
+        logger.warn('sixth');
+        logger.groupEnd();
+        logger.log('seventh');
+
+        expect(logger.toString()).to.be.equal(`first${EOL}second${EOL}group1:${EOL}\tthird${EOL}\tgroup2:${EOL}\t\tfourth${EOL}\t\tfifth${EOL}\tsixth${EOL}seventh`);
+      });
+
     });
 
   });
