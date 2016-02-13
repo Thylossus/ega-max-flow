@@ -22,7 +22,7 @@ describe('Test Environment', () => {
     expect(result).to.have.length(instances);
     result.forEach((instanceResult) => {
       expect(instanceResult).to.be.an('array');
-      expect(instanceResult).to.have.length(algorithms);
+      expect(instanceResult).to.have.length(algorithms + 1);
       instanceResult.forEach((algorithmResult) => {
         expect(algorithmResult).to.be.instanceOf(log.Logger);
       });
