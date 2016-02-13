@@ -251,7 +251,7 @@ const log = require('../util/log');
       logger: logger
     };
 
-    logger.log('Algorithm: Dinic');
+    logger.group('Algorithm - Dinic');
     logger.log('Flow is initially the zero flow');
 
     // Step 1: build a level graph
@@ -278,6 +278,7 @@ const log = require('../util/log');
     }
 
     logger.log('Terminate because there are no more flow augmenting paths');
+    logger.groupEnd();
 
     return output;
   }

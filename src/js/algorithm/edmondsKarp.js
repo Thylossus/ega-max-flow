@@ -46,7 +46,7 @@ const log = require('../util/log');
       logger: logger
     };
 
-    logger.log('Algorithm: Edmonds Karp');
+    logger.group('Algorithm - Edmonds Karp');
     logger.log('Initialized the graph with the zero flow');
 
     while (bfsResult = bfs(graph, logger)) {
@@ -91,7 +91,8 @@ const log = require('../util/log');
       yield output;
     }
 
-    logger.log('Terminate because there is no flow-augmenting path')
+    logger.log('Terminate because there is no flow-augmenting path');
+    logger.groupEnd();
 
     return output;
   }

@@ -45,7 +45,6 @@ const log = require('../util/log');
 
   function init(graph, logger) {
 
-    logger.log('Algorithm: Preflow Push');
     logger.group('Initialize');
 
     let S = queue.create();
@@ -158,6 +157,8 @@ const log = require('../util/log');
       step: '',
       activeElement: null
     };
+
+    logger.group('Algorithm - Preflow Push');
     let S = init(graph, logger);
 
     // The active vertex
@@ -194,6 +195,9 @@ const log = require('../util/log');
 
       yield output;
     }
+
+    logger.log('Terminate because are no more vertices in S');
+    logger.groupEnd();
 
     return output;
   }

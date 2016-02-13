@@ -44,7 +44,7 @@ const log = require('../util/log');
       logger: logger
     };
 
-    logger.log('Algorithm: Ford Fulkerson');
+    logger.group('Algorithm - Ford Fulkerson');
     logger.log('Initialized the graph with the zero flow');
 
     while (dfsResult = dfs(graph, logger)) {
@@ -78,7 +78,8 @@ const log = require('../util/log');
       yield output;
     }
 
-    logger.log('Terminate because there is no flow-augmenting path')
+    logger.log('Terminate because there is no flow-augmenting path');
+    logger.groupEnd();
 
     return output;
   }
