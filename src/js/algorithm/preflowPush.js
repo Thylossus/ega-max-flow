@@ -45,7 +45,8 @@ const log = require('../util/log');
 
   function init(graph, logger) {
 
-    logger.group('init');
+    logger.log('Algorithm: Preflow Push');
+    logger.group('Initialize');
 
     let S = queue.create();
     let a = graph.source.nextArc();
@@ -53,10 +54,10 @@ const log = require('../util/log');
 
     // Step 1: set flow to 0 for each arc
     // -> finished (this is the default flow value)
-    logger.log('set flow to 0 for each arc');
+    logger.log('Set flow to 0 for each arc');
 
     // Step 2: create a staturated cut between the source and the rest of the graph and add the nodes reachable from s to S
-    logger.group('create a saturated cut between the source and the rest of the graph');
+    logger.group('Create a saturated cut between the source and the rest of the graph');
     while (a !== null) {
       flow = a.capacity;
       a.increaseFlow(flow);
@@ -64,7 +65,7 @@ const log = require('../util/log');
 
       S.push(a.to);
 
-      logger.log(`push, ${flow} from ${a.from.id} to ${a.to.id} and add ${a.to.id} to S`);
+      logger.log(`Push, ${flow} from ${a.from.id} to ${a.to.id} and add ${a.to.id} to S`);
 
       a = graph.source.nextArc();
     }
@@ -74,11 +75,11 @@ const log = require('../util/log');
     graph.source.reset();
 
     // Step 3: compute a valid distance labeling by calculating the distances from t
-    logger.log('compute a valid distance labeling');
+    logger.log('Compute a valid distance labeling');
     distanceFromSink(graph);
 
     // Step 4: set d(s) = |V| (this does not violate the valid distance labeling because all of s's outgoing arcs have capacity 0 due to step 2)
-    logger.log('set d(s) = |V|');
+    logger.log('Set d(s) = |V|');
     graph.source.distance = graph.vertices.length;
 
     // Step 5: reset all current arc indizes
@@ -93,38 +94,38 @@ const log = require('../util/log');
     let w = a.to;
     let flow = 0;
 
-    logger.group('push');
+    logger.group('Push');
 
     // Step 3.1: add w to set of active vertices
     if (!w.equals(graph.source) && !w.equals(graph.sink) && w.excess === 0) {
       // Add w to S because after this step w will be active
       S.push(w);
-      logger.log(`add ${w.id} to S`);
+      logger.log(`Add ${w.id} to S`);
     }
 
     // Step 3.2: increase flow on a by minimum of excess and residual capacity
     flow = Math.min(a.capacity, v.excess);
     a.increaseFlow(flow);
-    logger.log(`push ${flow} from ${a.from.id} to ${a.to.id}`);
+    logger.log(`Push ${flow} from ${a.from.id} to ${a.to.id}`);
 
 
     // Step 3.3: increase excess of w and decrease excess of v accordingly
     w.excess += flow;
     v.excess -= flow;
-    logger.log(`increase excess of ${w.id} and decrease excess of ${v.id} by ${flow}`);
+    logger.log(`Increase excess of ${w.id} and decrease excess of ${v.id} by ${flow}`);
 
     // Step 3.4: remove v from S if it is not active any more
     if (v.excess === 0) {
       // Since S is a queue, v is on its front because v was obtained via S.top()
       S.pop();
-      logger.log(`remove ${v.id} from S because its not active any more`);
+      logger.log(`Remove ${v.id} from S because its not active any more`);
     }
 
     logger.groupEnd();
   }
 
   function relabel(graph, a, v, logger) {
-    logger.group(`relabel ${v.id}`);
+    logger.group(`Relabel ${v.id}`);
 
     // Step 4.1: Find minimum neighbor distance TODO: check if this violates the complexity constraints
     let dMin = v.outgoingArcs.reduce((min, arc) => {
@@ -135,15 +136,15 @@ const log = require('../util/log');
 
       return min;
     }, Infinity);
-    logger.log(`minimum distance of adjecent vertices is ${dMin}`);
+    logger.log(`Minimum distance of adjecent vertices is ${dMin}`);
 
     // Step 4.2: Set distance of v to dMin + 1
     v.distance = dMin + 1;
-    logger.log(`set distance of ${v.id} to ${v.distance}`);
+    logger.log(`Set distance of ${v.id} to ${v.distance}`);
 
     // Step 4.3: Reset current arc counter of v
     v.currentArcIndex = -1;
-    logger.log(`reset current arc counter of ${v.id}`);
+    logger.log(`Reset current arc counter of ${v.id}`);
     logger.groupEnd();
   }
 

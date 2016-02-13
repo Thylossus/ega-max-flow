@@ -8,9 +8,9 @@ const log = require('../util/log');
   'use strict';
 
   function buildLevelGraph(graph, logger) {
-    logger.group('build a level graph');
+    logger.group('Build a level graph');
 
-    logger.log('initialize a breadth first search');
+    logger.log('Initialize a breadth first search');
     let bfsTraversal = graphTraversal.init(queue.create(), graph);
 
     let output = null;
@@ -33,28 +33,28 @@ const log = require('../util/log');
       a = output.currentArc;
 
       if (a && a.to.level === a.from.level + 1 && a.capacity > 0) {
-        logger.group(`add the arc ${a.from.id} -> ${a.to.id} to the level graph`);
+        logger.group(`Add the arc ${a.from.id} -> ${a.to.id} to the level graph`);
 
         levelGraph.arcs.push(a);
 
         if (!a.from.outgoingArcList) {
-          logger.log(`add a list of outgoing arcs to the vertex ${a.from.id}`);
+          logger.log(`Add a list of outgoing arcs to the vertex ${a.from.id}`);
           a.from.outgoingArcList = dll.create();
           a.from.outgoingArcListPointer = a.from.outgoingArcList.head;
         }
 
         if (!a.to.incomingArcList) {
-          logger.log(`add a list of incoming arcs to thie vertex ${a.to.id}`);
+          logger.log(`Add a list of incoming arcs to thie vertex ${a.to.id}`);
           a.to.incomingArcList = dll.create();
         }
 
-        logger.log(`add the arc ${a.from.id} -> ${a.to.id} to ${a.from.id}'s outgoning arc list`);
+        logger.log(`Add the arc ${a.from.id} -> ${a.to.id} to ${a.from.id}'s outgoning arc list`);
         outgoingArcListElement = a.from.outgoingArcList.add(a);
-        logger.log(`add the arc ${a.from.id} -> ${a.to.id} to ${a.to.id}'s incoming arc list`);
+        logger.log(`Add the arc ${a.from.id} -> ${a.to.id} to ${a.to.id}'s incoming arc list`);
         incomingArcListElement = a.to.incomingArcList.add(a);
 
         // Set cross references
-        logger.log('set cross references for fast deletion of arcs in the outgoing and incoming arc lists')
+        logger.log('Set cross references for fast deletion of arcs in the outgoing and incoming arc lists')
         outgoingArcListElement.elementRef = {
           list: a.to.incomingArcList,
           element: incomingArcListElement,
@@ -73,7 +73,7 @@ const log = require('../util/log');
       result = bfsTraversal.next();
     }
 
-    logger.log('the level graph has been constructed')
+    logger.log('The level graph has been constructed')
 
     logger.groupEnd();
 
@@ -114,7 +114,7 @@ const log = require('../util/log');
   }
 
   function findFlowAugmentingPathInLevelGraph(levelGraph, logger) {
-    logger.group('find flow augmenting path in the provided level graph');
+    logger.group('Find flow augmenting path in the provided level graph');
 
     let store = stack.create();
 
@@ -150,8 +150,8 @@ const log = require('../util/log');
         lastMinCapacity = minCapacities[minCapacities.length - 1];
         lastMinCapacity = lastMinCapacity === undefined ? Infinity : lastMinCapacity;
 
-        logger.log('depth first search goes backwards');
-        logger.log(`remove the vertex ${v.id} and all of its incident arcs`);
+        logger.log('Depth first search goes backwards');
+        logger.log(`Remove the vertex ${v.id} and all of its incident arcs`);
         // Modification 2: delete v and all its incident arcs
         // v is automatically by removing all incident arcs
         // Delete outgoing arcs and the respective incoming arcs at other vertices
@@ -166,7 +166,7 @@ const log = require('../util/log');
 
         // Modification 1: Terminate if sink is reached
         if (a.value.to.equals(levelGraph.sink)) {
-          logger.log(`found a flow augmenting (s,t)-path in the level graph with a capacity of ${lastMinCapacity}`);
+          logger.log(`Found a flow augmenting (s,t)-path in the level graph with a capacity of ${lastMinCapacity}`);
           logger.groupEnd();
 
           return {
@@ -180,14 +180,14 @@ const log = require('../util/log');
       }
     }
 
-    logger.log('did not find a flow augmenting path in the provided level graph');
+    logger.log('Did not find a flow augmenting path in the provided level graph');
     logger.groupEnd();
 
     return null;
   }
 
   function calculateBlockingFlow(levelGraph, graph, logger) {
-    logger.group('calculate a blocking flow on the provided level graph');
+    logger.group('Calculate a blocking flow on the provided level graph');
 
     let pathFindingResult = findFlowAugmentingPathInLevelGraph(levelGraph, logger);
     let blockingFlow = {
@@ -196,31 +196,31 @@ const log = require('../util/log');
     };
 
     while (pathFindingResult) {
-      logger.group('increment the flow along the found (s,t)-path');
+      logger.group('Increment the flow along the found (s,t)-path');
 
       pathFindingResult.path.forEach((element) => {
-        logger.group(`arc ${element.value.from.id} -> ${element.value.to.id}`);
+        logger.group(`Arc ${element.value.from.id} -> ${element.value.to.id}`);
 
         // Increase flow
-        logger.log(`increase the flow on the arc by ${pathFindingResult.minCapacity}`);
+        logger.log(`Increase the flow on the arc by ${pathFindingResult.minCapacity}`);
         element.value.increaseFlow(pathFindingResult.minCapacity);
-        logger.log(`new flow: ${element.value.flow}`);
+        logger.log(`New flow: ${element.value.flow}`);
 
         // Add to result
-        logger.log('add the arc to the blocking flow');
+        logger.log('Add the arc to the blocking flow');
         blockingFlow.arcs.push(element.value);
         blockingFlow.flow.push({id: element.value.id, value: pathFindingResult.minCapacity});
 
         // Check if capacity was reduced to 0
         if (element.value.capacity === 0) {
-          logger.log('the arc\'s capacity has been reduced to 0');
-          logger.log(`remove the arc from ${element.value.from.id}'s outgoing arc list`);
+          logger.log('The arc\'s capacity has been reduced to 0');
+          logger.log(`Remove the arc from ${element.value.from.id}'s outgoing arc list`);
           // Remove arc
           element.value.from.outgoingArcList.remove(element);
           let refList = element.elementRef.list;
           let refElement = element.elementRef.element;
 
-          logger.log(`remove the corresponding entry in ${element.value.to.id}'s incoming arc list`);
+          logger.log(`Remove the corresponding entry in ${element.value.to.id}'s incoming arc list`);
           refList.remove(refElement);
         }
 
@@ -251,7 +251,8 @@ const log = require('../util/log');
       logger: logger
     };
 
-    logger.log('flow is initially the zero flow')
+    logger.log('Algorithm: Dinic');
+    logger.log('Flow is initially the zero flow');
 
     // Step 1: build a level graph
     let levelGraph = buildLevelGraph(graph, logger);
@@ -276,7 +277,7 @@ const log = require('../util/log');
       levelGraph = buildLevelGraph(graph, logger);
     }
 
-    logger.log('terminate because there are no more flow augmenting paths')
+    logger.log('Terminate because there are no more flow augmenting paths');
 
     return output;
   }
