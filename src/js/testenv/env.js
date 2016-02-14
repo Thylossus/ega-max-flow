@@ -32,7 +32,7 @@ const PREFLOW_PUSH = 3;
     logger.group(`Run ${ALGORITHM_NAMES[algo]}`);
     logger.log(`Started at ${getTime()}`);
 
-    let algoResult = algofn.run(fordFulkerson.init(graph));
+    let algoResult = algofn.run(algofn.init(graph));
 
     logger.log(`Finished at ${getTime()}`);
 
@@ -74,6 +74,11 @@ const PREFLOW_PUSH = 3;
     logger.groupEnd();
 
     return allMaxFlowsEqual;
+  };
+
+  let validateResidualGraph = function validateResidualGraph(graph, logger) {
+    // TODO: check if all capacity constraints are satisfied (Kapazitätsbedingungen)
+    // TODO: check if all inbound flows are equal to all outbound flows (Flusserhaltungsbedingungen)
   };
 
   let normalIteration = function normalIteration(graph, iteration) {
@@ -119,8 +124,8 @@ const PREFLOW_PUSH = 3;
     return result;
   };
 
-  let validateResidualGraph = function validateResidualGraph(graph, logger) {
-
+  let manipulatedIteration = function() {
+    // TODO: provoke errors by manipulating arc capacities etc.
   };
 
   module.exports = (instances, vertices, maxCapacity) => {

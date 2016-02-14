@@ -16,6 +16,7 @@ $(document).ready(() => {
     4: 'Preflow-Push'
   };
   const dfs = egamaxflow.algorithm.graphTraversal.init(egamaxflow.structure.stack.create());
+  const testEnv = egamaxflow.testEnv;
 
 
   let graph;
@@ -32,12 +33,16 @@ $(document).ready(() => {
   let btnNext = $('#next');
   let btnPlay = $('#play');
   let btnPlayLabel = btnPlay.children('span').first();
+  let btnRunTest = $('#runTest');
   let inputSpeed = $('#speed');
   let inputAlgorithm = $('#algorithm');
   let lblAlgorithm = $('#labelAlgorithm');
   let inputGraphSettingsVertices = $('#graphSettingsVertices');
   let inputGraphSettingsMaxCapacity = $('#graphSettingsMaxCapacity');
   let inputGraphSettingsOrdered = $('#graphSettingsOrdered');
+  let inputTestEnvInstances = $('#testEnvInstances');
+  let inputTestEnvVertices = $('#testEnvVertices');
+  let inputTestEnvMaxCapacity = $('#testEnvMaxCapacity');
   let containerOutput = $('#output');
   let outputList = $('#output > ul');
   let algorithmSelection = $('#algorithmSelection');
@@ -345,9 +350,21 @@ $(document).ready(() => {
     redraw();
   });
 
+  btnRunTest.on('click', (e) => {
+    e.preventDefault();
+
+    let instances = inputTestEnvInstances.val();
+    let vertices = inputTestEnvVertices.val();
+    let maxCapacity = inputTestEnvMaxCapacity.val();
+
+    // TODO: make output downloadable as a file
+    // TODO: add some process indicator
+    let testEnvResult = testEnv(instances, vertices, maxCapacity);
+    console.log(testEnvResult);
+  });
+
   inputSpeed.on('change', () => {
     speed = inputSpeed.val();
-    console.log(`Changed speed to ${speed} ms.`);
   });
 
   $('.graph-settings').on('change', () => {
