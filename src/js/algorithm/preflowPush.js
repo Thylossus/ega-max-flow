@@ -149,7 +149,7 @@ const log = require('../util/log');
 
   function* iterator(graph) {
     // Only print if console.group is supported
-    let logger = log.create({print: !!console.group});
+    let logger = log.create();
     let output = {
       flow: {},
       preflow: [],
