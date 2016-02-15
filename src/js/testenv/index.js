@@ -12,6 +12,7 @@ const env = require('./env');
     console.log('\t1. The number of instances (> 0).');
     console.log('\t2. The number of vertices (> 2).');
     console.log('\t3. The maximum capacity (> 0).');
+    console.log('\t4. Verbose (0 or 1, defaults to 0)');
 
     process.exit(1);
   }
@@ -19,6 +20,7 @@ const env = require('./env');
   let instances = parseInt(params[0], 10);
   let vertices = parseInt(params[1], 10);
   let maxCapacity = parseInt(params[2], 10);
+  let verbose = !!params[3];
 
   if (isNaN(instances) || isNaN(vertices) || isNaN(maxCapacity)) {
     console.log('Please provide numbers as command line parameters.');
@@ -44,9 +46,13 @@ const env = require('./env');
 
   result.forEach((instance) => {
     if (instance.forEach) {
-      instance.forEach((algo) => {
-        console.log(algo.toString());
-      });
+      if (verbose) {
+        instance.forEach((algo) => {
+          console.log(algo.toString());
+        });
+      } else {
+        console.log(instance[instance.length - 1].toString());
+      }
     } else {
       // Manipulated iteration logger
       console.log(instance.toString());
