@@ -34,6 +34,8 @@ $(document).ready(() => {
   let btnPlay = $('#play');
   let btnPlayLabel = btnPlay.children('span').first();
   let btnRunTest = $('#runTest');
+  let btnDownloadResults = $('#downloadResults');
+  let btnCancelTest = $('#cancelTest');
   let inputSpeed = $('#speed');
   let inputAlgorithm = $('#algorithm');
   let lblAlgorithm = $('#labelAlgorithm');
@@ -43,13 +45,19 @@ $(document).ready(() => {
   let inputTestEnvInstances = $('#testEnvInstances');
   let inputTestEnvVertices = $('#testEnvVertices');
   let inputTestEnvMaxCapacity = $('#testEnvMaxCapacity');
+  let inputTestEnvVerbose = $('#testEnvVerbose');
   let containerOutput = $('#output');
   let outputList = $('#output > ul');
   let algorithmSelection = $('#algorithmSelection');
   let algorithmCtrl = $('#algorithmCtrl');
+  let runSettings = $('#runSettings');
+  let runProgress = $('#runProgress');
+  let runResult = $('#runResult');
 
   let playing = false;
   let speed = 1000;
+
+  let resultString;
 
   let init = function init(options) {
     options = options || {};
@@ -356,11 +364,68 @@ $(document).ready(() => {
     let instances = inputTestEnvInstances.val();
     let vertices = inputTestEnvVertices.val();
     let maxCapacity = inputTestEnvMaxCapacity.val();
+    let verbose = inputTestEnvVerbose.prop('checked');
+    let start = egamaxflow.moment();
 
-    // TODO: make output downloadable as a file
-    // TODO: add some process indicator
+    runSettings.hide();
+    runProgress.show();
+    disable(btnRunTest);
+
     let testEnvResult = testEnv(instances, vertices, maxCapacity);
-    console.log(testEnvResult);
+
+    let end = egamaxflow.moment();
+
+    runProgress.hide();
+    runResult.show();
+    runResult.text(`Finished test environment run. Started ${start.format('YYYY-MM-DD HH:mm:ss.SSS')} and finished ${end.format('YYYY-MM-DD HH:mm:ss.SSS')}! Click "Download Results" to download the log file.`);
+    btnRunTest.hide();
+    btnDownloadResults.show();
+
+    resultString = '';
+    testEnvResult.forEach((instance) => {
+      if (instance.forEach) {
+          if (verbose) {
+            instance.forEach((algo) => {
+              resultString += algo.toString();
+            });
+          } else {
+            resultString += instance[instance.length - 1].toString();
+          }
+      } else {
+        // Manipulated iteration logger
+        resultString += instance.toString();
+      }
+
+    });
+  });
+
+  btnDownloadResults.on('click', (e) => {
+    e.preventDefault();
+
+    runResult.hide();
+    runSettings.show();
+    enable(btnRunTest);
+    btnRunTest.show();
+    btnDownloadResults.hide();
+
+    window.open('data:text/plain,' + encodeURIComponent(resultString));
+    resultString = null;
+
+    $('#testEnvModal').modal('hide');
+  });
+
+  btnCancelTest.on('click', (e) => {
+    e.preventDefault();
+
+    runResult.hide();
+    runProgress.hide();
+    runSettings.show();
+
+    btnDownloadResults.hide();
+    enable(btnRunTest);
+    btnRunTest.show();
+
+    $('#testEnvModal').modal('hide');
   });
 
   inputSpeed.on('change', () => {
