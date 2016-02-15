@@ -43,9 +43,15 @@ const env = require('./env');
   let result = env(instances, vertices, maxCapacity);
 
   result.forEach((instance) => {
-    instance.forEach((algo) => {
-      console.log(algo.toString());
-    });
+    if (instance.forEach) {
+      instance.forEach((algo) => {
+        console.log(algo.toString());
+      });
+    } else {
+      // Manipulated iteration logger
+      console.log(instance.toString());
+    }
+
   });
 
 }());

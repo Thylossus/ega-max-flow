@@ -9,7 +9,6 @@ const graphConfig = require('./config/graph');
 (function () {
   'use strict';
 
-  // TODO: think of which tools to expose
   exports.graph = graph;
   exports.util = util;
   exports.algorithm = algorithm;

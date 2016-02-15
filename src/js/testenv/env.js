@@ -6,6 +6,8 @@ const dinic = algorithms.dinic;
 const preflowPush = algorithms.preflowPush;
 const graphGen = require('../graph/generator');
 const moment = require('moment');
+const graphConfig = require('../../../config/graph');
+const random = require('lodash/number/random');
 
 const ALGORITHM_NAMES = ['Ford Fulkerson', 'Edmonds Karp', 'Dinic', 'Preflow-Push'];
 const FORD_FULKERSON = 0;
@@ -13,11 +15,13 @@ const EDMONDS_KARP = 1;
 const DINIC = 2;
 const PREFLOW_PUSH = 3;
 
+const SEPARATOR = '--------------------------------------------------------------------------------';
+
 (function() {
   'use strict';
 
   let getTime = function getTime() {
-    return moment().format('HH:mm:ss.SSS');
+    return moment().format('YYYY-MM-DD HH:mm:ss.SSS');
   };
 
   let getMaxFlow = function getMaxFlow(graph) {
@@ -28,7 +32,7 @@ const PREFLOW_PUSH = 3;
 
   let runAlgorithm = function (algo, algofn, graph, logger) {
     let result = {};
-    // Ford Fulkerson
+
     logger.group(`Run ${ALGORITHM_NAMES[algo]}`);
     logger.log(`Started at ${getTime()}`);
 
@@ -77,8 +81,74 @@ const PREFLOW_PUSH = 3;
   };
 
   let validateResidualGraph = function validateResidualGraph(graph, logger) {
-    // TODO: check if all capacity constraints are satisfied (Kapazitätsbedingungen)
-    // TODO: check if all inbound flows are equal to all outbound flows (Flusserhaltungsbedingungen)
+    let valid = true;
+
+    logger.group('Checking if capacity constraint satisfied');
+    valid = graph.arcs.reduce((valid, arc) => {
+      let reverse = arc.reverse;
+      let flow = arc.flow;
+      if (reverse) {
+        flow = flow - reverse.flow;
+      }
+
+      let arcValid = arc.initCapacity >= flow;
+
+      if (!arcValid) {
+        logger.error(`Arc ${arc.id} violates the capacity constraint! Its capacity is ${arc.initCapacity} and the flow on it is ${arc.flow}`);
+      }
+      return valid && arcValid;
+    }, valid);
+    if (valid) {
+      logger.log('All arcs satisfy the capacity constraint');
+      logger.groupEnd();
+    } else {
+      logger.groupEnd();
+      return valid;
+    }
+
+
+    logger.group('Checking if flow conservation constraint is satisfied');
+    valid = graph.vertices.reduce((valid, vertex) => {
+      if (vertex.type === graphConfig.VERTEX_TYPE.SOURCE || vertex.type === graphConfig.VERTEX_TYPE.SINK) {
+        return valid;
+      }
+
+      let inbound = graph.arcs.filter((arc) => {
+        return arc.to.equals(vertex);
+      });
+      let outbound = graph.arcs.filter((arc) => {
+        return arc.from.equals(vertex);
+      });
+
+      let inboundFlow = inbound.reduce((sum, arc) => {
+        return sum + arc.flow;
+      }, 0);
+      let outboundFlow = outbound.reduce((sum, arc) => {
+        return sum + arc.flow;
+      }, 0);
+
+      let vertexValid = inboundFlow === outboundFlow;
+
+      if (!vertexValid) {
+        logger.error(`Vertex ${vertex.id} violates the flow conservation constraint! Its inbound flow is ${inboundFlow} and its outbound flow is ${outboundFlow}`);
+      }
+
+      return valid && vertexValid;
+    }, valid);
+
+    if (valid) {
+      logger.log('All arcs satisfy the flow conservation constraint');
+    }
+
+    logger.groupEnd();
+
+    return valid;
+  };
+
+  let logSeparator = function logSeparator(logger) {
+    logger.log();
+    logger.log(SEPARATOR);
+    logger.log();
   };
 
   let normalIteration = function normalIteration(graph, iteration) {
@@ -88,7 +158,8 @@ const PREFLOW_PUSH = 3;
     let runResult;
     let maxFlow;
 
-    logger.group(`Iteraton ${iteration}`);
+    logSeparator(logger);
+    logger.group(`Iteration ${iteration + 1}`);
 
     // Ford Fulkerson
     runResult = runAlgorithm(FORD_FULKERSON, fordFulkerson, graph, logger);
@@ -118,27 +189,151 @@ const PREFLOW_PUSH = 3;
     // Close iteration logging group
     logger.groupEnd();
 
+    // Log separator
+    logSeparator(logger);
+
     // Add iteration logger to result array
     result.push(logger);
 
     return result;
   };
 
-  let manipulatedIteration = function() {
-    // TODO: provoke errors by manipulating arc capacities etc.
+  let manipulatedIteration = function(graph) {
+    // provoke errors by manipulating arc capacities etc.
+    let logger = log.create();
+    let allMaxFlows = [];
+    let runResult;
+    let maxFlow;
+
+    logSeparator(logger);
+    logger.group(`Manipulated iteration`);
+    logger.log('This iteration verifies that all performed checks can detect errors')
+
+    // Ford Fulkerson
+    runResult = capacityConstraintFail(FORD_FULKERSON, fordFulkerson, graph, logger);
+    allMaxFlows.push(runResult);
+
+    // Edmonds Karp
+    runResult = flowConservationFail(EDMONDS_KARP, edmondsKarp, graph, logger);
+    allMaxFlows.push(runResult);
+
+    // Dinic
+    runResult = capacityConstraintFail(DINIC, dinic, graph, logger);
+    allMaxFlows.push(runResult);
+
+    // Preflow-Push
+    runResult = flowConservationFail(PREFLOW_PUSH, preflowPush, graph, logger);
+    // Manipulate the max flow to simulate failed "checkMaxFlowEquality"
+    allMaxFlows.push(runResult + 1);
+
+    // Check if all algorithms produced the same outcome, i.e. max flow
+    // Use ford fulkerson's maximum flow as a reference value
+    maxFlow = allMaxFlows[0];
+    checkMaxFlowEquality(maxFlow, allMaxFlows, logger);
+
+    // Close iteration logging group
+    logger.groupEnd();
+
+    // Log separator
+    logSeparator(logger);
+
+    return logger;
+  };
+
+  let capacityConstraintFail = function (algo, algofn, graph, logger) {
+    logger.group(`Simulate flow constraint violation for ${ALGORITHM_NAMES[algo]}`);
+    logger.log(`Started at ${getTime()}`);
+
+    let algoResult = algofn.run(algofn.init(graph));
+    // Get maximum flow
+    let maxFlow = getMaxFlow(graph);
+
+    logger.log(`Finished at ${getTime()}`);
+
+    // Set the flow of an arbitrary arc to an invalid value
+    let arc = graph.arcs[random(graph.arcs.length - 1)];
+    let reverse = arc.reverse;
+    let flow = arc.reverse ? arc.flow - reverse.flow : arc.flow;
+    let maxCapacity = arc.reverse ? arc.initCapacity + reverse.initCapacity : arc.initCapacity;
+
+    logger.log(`Random arc ${arc.id} with capacity ${arc.initCapacity} and flow ${flow}`);
+    logger.log(`Set flow to ${maxCapacity + 1}`);
+    arc.flow = maxCapacity + 1;
+
+    // Validate residual graph
+    validateResidualGraph(graph, logger);
+
+    // Reset graph
+    graph.reset();
+    // Close algorithm logging group
+    logger.groupEnd();
+
+    return maxFlow;
+  };
+
+  let flowConservationFail = function (algo, algofn, graph, logger) {
+    logger.group(`Simulate flow conservation violation for ${ALGORITHM_NAMES[algo]}`);
+    logger.log(`Started at ${getTime()}`);
+
+    let algoResult = algofn.run(algofn.init(graph));
+    // Get maximum flow
+    let maxFlow = getMaxFlow(graph);
+
+    logger.log(`Finished at ${getTime()}`);
+
+    let vertex;
+    let inbound;
+    // Set the inbound flow of an arbitrary vertex to a value higher than the outbound flow
+    for (let i = 0; i < graph.vertices.length && !vertex; i++) {
+      vertex = graph.vertices[random(graph.vertices.length - 1)];
+      // Find inbound arcs with residual capacity > 0
+      inbound = graph.arcs.filter((arc) => {
+        return arc.to.equals(vertex) && arc.capacity > 0;
+      });
+
+      if (inbound.length === 0) {
+        vertex = undefined;
+        inbound = undefined;
+      }
+    }
+
+    if (!vertex) {
+      logger.error('Could not find any vertex with some inbound arc that has left some residual capacity')
+      logger.error('Therefore a simulation of the flow conservation violation is not possible for this instance')
+      return 0;
+    }
+
+    inbound.forEach((arc) => {
+      arc.flow += 1;
+    });
+
+    // Validate residual graph
+    validateResidualGraph(graph, logger);
+
+    // Reset graph
+    graph.reset();
+    // Close algorithm logging group
+    logger.groupEnd();
+
+    return maxFlow;
   };
 
   module.exports = (instances, vertices, maxCapacity) => {
     let result = [];
+    let graph;
 
     for (var i = 0; i < instances; i++) {
       // Generate graph (provide false to ensure that the graph is unordered)
-      let graph = graphGen.create(vertices, maxCapacity, false).run();
+      graph = graphGen.create(vertices, maxCapacity, false).run();
 
       // Set result for this instance
       result[i] = normalIteration(graph, i);
 
     }
+
+    // Generate graph (provide false to ensure that the graph is unordered)
+    graph = graphGen.create(vertices, maxCapacity, false).run();
+    result[result.length] = manipulatedIteration(graph);
 
     return result;
   };
