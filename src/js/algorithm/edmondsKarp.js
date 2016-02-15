@@ -42,7 +42,8 @@ const log = require('../util/log');
     let output = {
       flowAugmentingPath: [],
       flow: flow,
-      logger: logger
+      logger: logger,
+      incFlow: 0
     };
 
     logger.group('Algorithm - Edmonds Karp');
@@ -83,6 +84,7 @@ const log = require('../util/log');
         vertex.reset();
       });
 
+      output.incFlow = bfsResult.minCapacity;
       output.flow = flow;
 
       logger.groupEnd();

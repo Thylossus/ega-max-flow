@@ -47,7 +47,12 @@ $(document).ready(() => {
   let inputTestEnvMaxCapacity = $('#testEnvMaxCapacity');
   let inputTestEnvVerbose = $('#testEnvVerbose');
   let containerOutput = $('#output');
-  let outputList = $('#output > ul');
+  let outputList = $('#output > ol');
+  let exFordFulkerson = $('#exFordFulkerson');
+  let exEdmondsKarp = $('#exEdmondsKarp');
+  let exDinic = $('#exDinic');
+  let exPreflowPush = $('#exPreflowPush');
+  let outputResult = $('#outputResult');
   let algorithmSelection = $('#algorithmSelection');
   let algorithmCtrl = $('#algorithmCtrl');
   let runSettings = $('#runSettings');
@@ -59,6 +64,13 @@ $(document).ready(() => {
 
   let resultString;
 
+  let clearVertexLabels = function clearVertexLabels() {
+    // Remove vertex labels
+    graph.vertices.forEach((vertex) => {
+      vertex.label = '';
+    });
+  };
+
   let init = function init(options) {
     options = options || {};
     options.numberOfVertices = options.numberOfVertices || graphSettings.NUMBER_OF_VERTICES;
@@ -67,6 +79,8 @@ $(document).ready(() => {
     graph =  generator.create(options.numberOfVertices, options.maxCapacity, options.ordered).run();
     graph.nodes = graph.vertices;
     graph.edges = graph.arcs;
+
+    clearVertexLabels();
 
     s = new sigma({
       graph: graph,
@@ -86,7 +100,7 @@ $(document).ready(() => {
   };
 
   // Initialize
-  init();
+  init({ordered: true});
 
   let doIteration = function doIteration() {
     let result = iterator.next();
@@ -114,8 +128,11 @@ $(document).ready(() => {
         return sum + arc.flow - arc.reverse.flow;
       }, 0);
 
-      outputList.append('<li>Maximum flow = ' + maxFlow + '</li>');
-      outputList.append('<li>All arcs with flow > 0 are highlighted.</li>');
+      outputResult.text(`The maximum flow is ${maxFlow}. All arcs with a flow greater than zero are highlighted.`);
+
+      if (activeAlgorithm !== 'Preflow-Push') {
+        clearVertexLabels();
+      }
 
       return true;
     } else {
@@ -140,6 +157,8 @@ $(document).ready(() => {
             arc.color = sigmaSettings.EDGE_COLOR;
           }
         });
+
+        clearVertexLabels();
 
       } else if (activeAlgorithm === 'Preflow-Push') {
         // Reset arc colors
@@ -166,7 +185,8 @@ $(document).ready(() => {
 
         // Update vertex labels and set vertex colors
         graph.vertices.forEach((vertex) => {
-          vertex.label = vertex.id + ' (d = ' + vertex.distance + ', e = ' + vertex.excess + ')';
+          // vertex.label = vertex.id + ' (d = ' + vertex.distance + ', e = ' + vertex.excess + ')';
+          vertex.label = '' + vertex.distance;
           switch (vertex.type) {
             case graphSettings.VERTEX_TYPE.SOURCE:
               vertex.color = sigmaSettings.SOURCE_COLOR;
@@ -215,12 +235,8 @@ $(document).ready(() => {
           }
         });
 
-        // Log augmenting path
-        let path = output.flowAugmentingPath[0].from.id;
-        path = output.flowAugmentingPath.reduce((p, arc) => {
-          return p + ' > ' + arc.to.id;
-        }, path);
-        log.push(path);
+        // Log flow increment
+        log.push(output.incFlow);
 
         // Log to list
         outputList.html('');
@@ -228,6 +244,8 @@ $(document).ready(() => {
           outputList.append('<li>' + entry + '</li>');
         });
 
+
+        clearVertexLabels();
       }
 
     }
@@ -280,6 +298,23 @@ $(document).ready(() => {
       throw new Error('Unsupported algorithm');
     }
 
+    // Display explanation
+    $('.explanation').hide();
+    switch (algorithm) {
+      case '1':
+        exFordFulkerson.show();
+        break;
+      case '2':
+        exEdmondsKarp.show();
+        break;
+      case '3':
+        exDinic.show();
+        break;
+      case '4':
+        exPreflowPush.show();
+        break;
+    }
+
     // Update UI
     inputAlgorithm.hide();
     lblAlgorithm.text(algorithmNames[algorithm]);
@@ -287,7 +322,9 @@ $(document).ready(() => {
     algorithmCtrl.show();
     containerOutput.show();
     outputList.children('li').remove();
+    outputResult.text('');
     disableGraphSettings();
+
 
     // Reset log
     log = [];
@@ -297,6 +334,7 @@ $(document).ready(() => {
 
     // Reset graph
     graph.reset();
+    clearVertexLabels();
     s.graph.clear();
     s.graph.read(graph);
     s.refresh();

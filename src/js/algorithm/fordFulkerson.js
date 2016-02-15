@@ -41,7 +41,8 @@ const log = require('../util/log');
     let output = {
       flowAugmentingPath: [],
       flow: flow,
-      logger: logger
+      logger: logger,
+      incFlow: 0
     };
 
     logger.group('Algorithm - Ford Fulkerson');
@@ -70,6 +71,7 @@ const log = require('../util/log');
         vertex.reset();
       });
 
+      output.incFlow = dfsResult.minCapacity;
       output.flowAugmentingPath = dfsResult.flowAugmentingPath;
       output.flow = flow;
 

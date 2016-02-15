@@ -52,10 +52,9 @@
       #output {
         padding: 20px;
         display: none;
-      }
 
-      #algorithmCtrl {
-        display: none;
+        width: 25vw;
+        overflow: auto;
       }
 
       .small-centered-input {
@@ -63,7 +62,8 @@
         text-align: center;
       }
 
-      #runProgress, #runResult, #downloadResults {
+
+      #runProgress, #runResult, #downloadResults, #algorithmCtrl, .explanation {
         display: none;
       }
 
@@ -86,7 +86,7 @@
             </div>
             <div class="checkbox">
               <label class="checkbox-label" for="graphSettingsOrdered">
-                <input type="checkbox" name="graphSettingsOrdered" id="graphSettingsOrdered" class="graph-settings" /> Ordered
+                <input type="checkbox" name="graphSettingsOrdered" id="graphSettingsOrdered" class="graph-settings" checked="checked" /> Ordered
               </label>
             </div>
           </form>
@@ -125,8 +125,33 @@
       <div id="content">
         <div id="container"></div>
         <div id="output">
+          <h3>Explanation</h3>
+          <p>
+            In all algorithms, the source is marked <span style="font-weight:bold;color:#B200FF">purple</span> and the sink is marked <span style="font-weight:bold;color:#FFB419">yellow</span>.
+            You can either step trough the algorithm using the next button (<span class="glyphicon glyphicon-step-forward"></span>) or let it run automatically by pressing the play button (<span class="glyphicon glyphicon-play"></span>).
+            If the selected algorithms runs automatically, you can pause it at any time by pressing the pause button (<span class="glyphicon glyphicon-pause"></span>);
+          </p>
+          <p id="exFordFulkerson" class="explanation">
+            <strong>Ford Fulkerson</strong>
+            In each iteration, the flow augmenting path is highlighted in <span style="font-weight:bold;color:#193FFF">blue</span>. The amount of flow added in each iteration will be listed below.
+          </p>
+          <p id="exEdmondsKarp" class="explanation">
+            <strong>Edmonds Karp</strong>
+            In each iteration, the flow augmenting path is highlighted in <span style="font-weight:bold;color:#193FFF">blue</span>. The amount of flow added in each iteration will be listed below.
+          </p>
+          <p id="exDinic" class="explanation">
+            <strong>Dinic</strong>
+            <!-- TODO: add explanation -->
+            In each iteration, the flow augmenting path is highlighted in blue. The amount of flow added in each iteration will be listed below.
+          </p>
+          <p id="exPreflowPush" class="explanation">
+            <strong>Preflow-Push</strong>
+            <!-- TODO: add explanation -->
+            In each iteration, the flow augmenting path is highlighted in blue. The amount of flow added in each iteration will be listed below.
+          </p>
           <h3>Output</h3>
-          <ul><ul>
+          <ol></ol>
+          <p id="outputResult"></p>
         </div>
       </div>
     </div>
