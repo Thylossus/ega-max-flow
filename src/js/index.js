@@ -71,6 +71,16 @@ $(document).ready(() => {
     });
   };
 
+  let printLogToList = function printLogToList() {
+    outputList.html('');
+    log.forEach((entry) => {
+      outputList.append('<li>' + entry + '</li>');
+    });
+
+    // Scroll to bottom of list
+    containerOutput.scrollTop(containerOutput[0].scrollHeight)
+  };
+
   let init = function init(options) {
     options = options || {};
     options.numberOfVertices = options.numberOfVertices || graphSettings.NUMBER_OF_VERTICES;
@@ -158,14 +168,19 @@ $(document).ready(() => {
           }
         });
 
+        // Log flow increment
+        let incParts = output.blockingFlow.increments.join(' + ');
+        let incSum = output.blockingFlow.increments.reduce((sum, inc) => {
+          return sum + inc;
+        }, 0);
+        log.push(`${incParts} = ${incSum}`);
+
+        // Log to list
+        printLogToList();
+
         clearVertexLabels();
 
       } else if (activeAlgorithm === 'Preflow-Push') {
-        // Reset arc colors
-        graph.arcs.forEach((arc) => {
-          arc.color = sigmaSettings.EDGE_COLOR;
-        });
-
         // Mark saturated cut
         let dfsTraversal = dfs(graph, graph.source);
         let dfsTraversalResult = dfsTraversal.next();
@@ -204,16 +219,36 @@ $(document).ready(() => {
 
         });
 
+        // Highlight arcs that are part of the saturated cut
+        graph.arcs.forEach((arc) => {
+          let fromSourceOrReachable = arc.from.equals(graph.source) || reachableFromS[arc.from.id];
+          let toUnreachable = !reachableFromS[arc.to.id];
+
+          if (fromSourceOrReachable && toUnreachable) {
+            arc.color = sigmaSettings.EDGE_HIGHLIGHT_COLOR;
+          } else {
+            arc.color = sigmaSettings.EDGE_COLOR;
+          }
+        });
+
         // Highlight active element
         switch (output.step) {
           case 'push':
+            log.push(`Push: augment flow by ${output.stepInfo}`)
             output.activeElement.color = sigmaSettings.EDGE_ACTIVE_COLOR;
             break;
           case 'relabel':
+            log.push(`Relabel: add ${output.activeElement.distance - output.stepInfo}`);
             output.activeElement.color = sigmaSettings.NODE_ACTIVE_COLOR;
             break;
           default:
+            // First step
+            // Log first step message
+            log.push('Saturated arcs incident to the source and computed a valid distance labelling.');
         }
+
+        // Log to list
+        printLogToList();
 
         // Reset dfs traversal flags
         graph.vertices.forEach((vertex) => {
@@ -222,6 +257,7 @@ $(document).ready(() => {
           vertex.finished = false;
         });
       } else {
+        // Ford Fulkerson and Edmonds-Karp
         // Highlight flow augmenting path
         graph.arcs.forEach((arc) => {
           let onPath = output.flowAugmentingPath.some((a) => {
@@ -239,11 +275,7 @@ $(document).ready(() => {
         log.push(output.incFlow);
 
         // Log to list
-        outputList.html('');
-        log.forEach((entry) => {
-          outputList.append('<li>' + entry + '</li>');
-        });
-
+        printLogToList();
 
         clearVertexLabels();
       }

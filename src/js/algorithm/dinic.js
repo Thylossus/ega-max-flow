@@ -192,12 +192,14 @@ const log = require('../util/log');
     let pathFindingResult = findFlowAugmentingPathInLevelGraph(levelGraph, logger);
     let blockingFlow = {
       arcs: [],
-      flow: []
+      flow: [],
+      increments: []
     };
 
     while (pathFindingResult) {
       logger.group('Increment the flow along the found (s,t)-path');
 
+      blockingFlow.increments.push(pathFindingResult.minCapacity);
       pathFindingResult.path.forEach((element) => {
         logger.group(`Arc ${element.value.from.id} -> ${element.value.to.id}`);
 
@@ -262,6 +264,9 @@ const log = require('../util/log');
         vertex.reset();
       });
 
+      // Step 2: calculate a blocking flow
+      // Step 3: add blocking flow of the level graph to the flow in the residual graph
+      // Both steps are performed in calculateBlockingFlow
       output.blockingFlow = calculateBlockingFlow(levelGraph, graph, logger);
       output.levelGraph = levelGraph;
 

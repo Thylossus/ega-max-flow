@@ -132,22 +132,28 @@
             If the selected algorithms runs automatically, you can pause it at any time by pressing the pause button (<span class="glyphicon glyphicon-pause"></span>);
           </p>
           <p id="exFordFulkerson" class="explanation">
-            <strong>Ford Fulkerson</strong>
-            In each iteration, the flow augmenting path is highlighted in <span style="font-weight:bold;color:#193FFF">blue</span>. The amount of flow added in each iteration will be listed below.
+            <strong>Ford-Fulkerson</strong>
+            In each iteration, the flow augmenting path is highlighted in <span style="font-weight:bold;color:#193FFF">blue</span>. The amount of flow added to the arcs on the flow augmenting path in each iteration will be listed below.
           </p>
           <p id="exEdmondsKarp" class="explanation">
-            <strong>Edmonds Karp</strong>
-            In each iteration, the flow augmenting path is highlighted in <span style="font-weight:bold;color:#193FFF">blue</span>. The amount of flow added in each iteration will be listed below.
+            <strong>Edmonds-Karp</strong>
+            In each iteration, the flow augmenting path is highlighted in <span style="font-weight:bold;color:#193FFF">blue</span>. The amount of flow added to the arcs on the flow augmenting path in each iteration will be listed below.
           </p>
           <p id="exDinic" class="explanation">
             <strong>Dinic</strong>
-            <!-- TODO: add explanation -->
-            In each iteration, the flow augmenting path is highlighted in blue. The amount of flow added in each iteration will be listed below.
+            In each iteration, the level graph is visualized in <span style="font-weight:bold;color:#193FFF">blue</span> and the blocking flow is highlighted in <span style="font-weight:bold;color:#FF6532">orange</span>.
+            The amount of flow added to the maximum flow in each iteration via the blocking flow will be listed below.
           </p>
           <p id="exPreflowPush" class="explanation">
             <strong>Preflow-Push</strong>
-            <!-- TODO: add explanation -->
-            In each iteration, the flow augmenting path is highlighted in blue. The amount of flow added in each iteration will be listed below.
+            In each push step, the arc on which the flow is augmented, is highlighted in <span style="font-weight:bold;color:#193FFF">blue</span>.
+            In addition to that, in a relabel step the relabelled vertex is colored <span style="font-weight:bold;color:#193FFF">blue</span> as well.
+            <br />
+            To visualize the saturated cut, all vertices reachable from the source in the residual graph are colored in
+            <span style="font-weight:bold;color:#666">dark gray</span> and unreachable nodes are colored in <span style="font-weight:bold;color:#AAA">light gray</span>.
+            Moreover, the arcs participating in the saturated cut are highlighted in <span style="font-weight:bold;color:#FF6532">orange</span>.
+            <br />
+            The amount of flow pushed in each "push" step and the distance label incrementation in each "relabel" step will be listed below.
           </p>
           <h3>Output</h3>
           <ol></ol>

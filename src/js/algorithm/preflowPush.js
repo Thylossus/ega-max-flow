@@ -121,6 +121,9 @@ const log = require('../util/log');
     }
 
     logger.groupEnd();
+
+    // Return the increment
+    return flow;
   }
 
   function relabel(graph, a, v, logger) {
@@ -138,6 +141,7 @@ const log = require('../util/log');
     logger.log(`Minimum distance of adjecent vertices is ${dMin}`);
 
     // Step 4.2: Set distance of v to dMin + 1
+    let oldDistance = v.distance;
     v.distance = dMin + 1;
     logger.log(`Set distance of ${v.id} to ${v.distance}`);
 
@@ -145,6 +149,9 @@ const log = require('../util/log');
     v.currentArcIndex = -1;
     logger.log(`Reset current arc counter of ${v.id}`);
     logger.groupEnd();
+
+    // Return old distance
+    return oldDistance;
   }
 
   function* iterator(graph) {
@@ -155,6 +162,7 @@ const log = require('../util/log');
       preflow: [],
       logger: logger,
       step: '',
+      stepInfo: null,
       activeElement: null
     };
 
@@ -182,13 +190,13 @@ const log = require('../util/log');
 
       if (a && a.isAdmissable) {
         // Step 3: push
-        push(graph, a, v, S, logger);
+        output.stepInfo = push(graph, a, v, S, logger);
         output.flow[a.id] = a.flow;
         output.step = 'push';
         output.activeElement = a;
       } else {
         // Step 4: relabel
-        relabel(graph, a, v, logger);
+        output.stepInfo = relabel(graph, a, v, logger);
         output.step = 'relabel';
         output.activeElement = v;
       }
