@@ -9,13 +9,16 @@ const log = require('../util/log');
     logger.group('Perform breadth first search');
 
     logger.log('Initialize graph traversal');
+    // Initialize graph traversal with queue in order to perform a breadth-first search
     let q = queue.create();
     let traverse = graphTraversal.init(q, graph);
     logger.log(`Run graph traversal until the sink (${graph.sink.id}) is found`);
+    // Run graph traversal until the sink is found
     let output = graphTraversal.run(traverse, graph.sink);
 
     let last = output.lexicographical[output.lexicographical.length - 1];
 
+    // Check if the sink was detected
     if (!last || !last.equals(graph.sink)) {
       logger.log('Did not find a flow augmenting path');
       logger.groupEnd();
@@ -27,7 +30,8 @@ const log = require('../util/log');
 
     let result = {
       sink: graph.sink,
-      minCapacity: graph.sink.parentArcMinCapacity
+      minCapacity: graph.sink.parentArcMinCapacity,
+      visitedVertices: output.lexicographical
     };
 
     logger.groupEnd();
@@ -47,8 +51,11 @@ const log = require('../util/log');
     };
 
     logger.group('Algorithm - Edmonds Karp');
+    // Induction basis: initialize a feasible flow => zero flow
     logger.log('Initialized the graph with the zero flow');
 
+    // Induction step: find a flow augmenting path with the smallest number of arcs
+    // Since the smalles number of arcs has to be found, use breadth-first search
     while (bfsResult = bfs(graph, logger)) {
       let arc;
       let vertex = bfsResult.sink;
@@ -58,6 +65,7 @@ const log = require('../util/log');
       // Reset flowAugmentingPath
       output.flowAugmentingPath = [];
 
+      // Increase flow along the flow augmenting path
       while (vertex) {
         arc = vertex.parentArc;
 
@@ -79,8 +87,8 @@ const log = require('../util/log');
         vertex = vertex.parent;
       }
 
-      // Reset vertices
-      graph.vertices.forEach((vertex) => {
+      // Reset visited vertices
+      bfsResult.visitedVertices.forEach((vertex) => {
         vertex.reset();
       });
 
