@@ -50,7 +50,7 @@ const log = require('../util/log');
       incFlow: 0
     };
 
-    logger.group('Algorithm - Ford Fulkerson');
+    logger.group('Algorithm - Ford-Fulkerson');
     // Induction basis: start with a feasible flow => zero flow
     logger.log('Initialized the graph with the zero flow');
 

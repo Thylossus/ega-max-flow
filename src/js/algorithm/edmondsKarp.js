@@ -51,7 +51,7 @@ const log = require('../util/log');
       incFlow: 0
     };
 
-    logger.group('Algorithm - Edmonds Karp');
+    logger.group('Algorithm - Edmonds-Karp');
     // Induction basis: initialize a feasible flow => zero flow
     logger.log('Initialized the graph with the zero flow');
 

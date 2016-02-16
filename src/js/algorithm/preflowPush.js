@@ -167,7 +167,7 @@ const log = require('../util/log');
       activeElement: null
     };
 
-    logger.group('Algorithm - Preflow Push');
+    logger.group('Algorithm - Preflow-Push');
     let S = init(graph, logger);
 
     // The active vertex
