@@ -11,8 +11,10 @@ const log = require('../util/log');
     logger.group('Build a level graph');
 
     logger.log('Initialize a breadth first search');
+    // Initialize a graph traversal
     let bfsTraversal = graphTraversal.init(queue.create(), graph);
 
+    // Traverse the graph and add a level marker to each vertex indicating the smallest number of arcs required to reach the vertex from s
     let output = null;
     let result = bfsTraversal.next();
 
@@ -29,25 +31,34 @@ const log = require('../util/log');
     let a;
 
     while (!result.done) {
+      // The code in the body of this while loop extends the graph traveral iterations
+
       output = result.value;
       a = output.currentArc;
 
+      // Check if the current arc is on the level graph
+      // It is only on the level graph if the level between its from vertex
+      // and its to vertex differ by 1 and there it has some remaining capacity
       if (a && a.to.level === a.from.level + 1 && a.capacity > 0) {
         logger.group(`Add the arc ${a.from.id} -> ${a.to.id} to the level graph`);
 
+        // Add arc to arcs of the level graph
         levelGraph.arcs.push(a);
 
+        // If a's `from` vertex has no outgoing arc list, initialize it as a doubly linked list
         if (!a.from.outgoingArcList) {
           logger.log(`Add a list of outgoing arcs to the vertex ${a.from.id}`);
           a.from.outgoingArcList = dll.create();
           a.from.outgoingArcListPointer = a.from.outgoingArcList.head;
         }
 
+        // If a's `to` vertex has no incominc arc list, initialize it as a doubly linked list
         if (!a.to.incomingArcList) {
-          logger.log(`Add a list of incoming arcs to thie vertex ${a.to.id}`);
+          logger.log(`Add a list of incoming arcs to the vertex ${a.to.id}`);
           a.to.incomingArcList = dll.create();
         }
 
+        // Add the arc a to the outgoing and incoming arc lists
         logger.log(`Add the arc ${a.from.id} -> ${a.to.id} to ${a.from.id}'s outgoning arc list`);
         outgoingArcListElement = a.from.outgoingArcList.add(a);
         logger.log(`Add the arc ${a.from.id} -> ${a.to.id} to ${a.to.id}'s incoming arc list`);
@@ -70,6 +81,7 @@ const log = require('../util/log');
         logger.groupEnd();
       }
 
+      // Start nex iteration of graph traversal
       result = bfsTraversal.next();
     }
 
@@ -131,10 +143,13 @@ const log = require('../util/log');
     // Minimum capacities
     let minCapacities = [];
     let lastMinCapacity = Infinity;
+    // Lexicographical order of visited vertices
+    let lexicographical= [];
 
     // Initialize traversal
     store.push(s);
     s.seen = true;
+    lexicographical.push(s);
 
     while (!store.empty) {
       v = store.top();
@@ -171,12 +186,14 @@ const log = require('../util/log');
 
           return {
             path: path,
-            minCapacity: lastMinCapacity
+            minCapacity: lastMinCapacity,
+            visited: lexicographical
           };
         }
 
         a.value.to.seen = true;
         store.push(a.value.to);
+        lexicographical.push(a.value.to);
       }
     }
 
@@ -187,6 +204,7 @@ const log = require('../util/log');
   }
 
   function calculateBlockingFlow(levelGraph, graph, logger) {
+    // Dinic's blocking flow algorithm
     logger.group('Calculate a blocking flow on the provided level graph');
 
     let pathFindingResult = findFlowAugmentingPathInLevelGraph(levelGraph, logger);
@@ -199,7 +217,10 @@ const log = require('../util/log');
     while (pathFindingResult) {
       logger.group('Increment the flow along the found (s,t)-path');
 
+      // Store the amount of flow added to the found path (only relevant for logging in UI)
       blockingFlow.increments.push(pathFindingResult.minCapacity);
+
+      // Increment flow along augmenting path
       pathFindingResult.path.forEach((element) => {
         logger.group(`Arc ${element.value.from.id} -> ${element.value.to.id}`);
 
@@ -229,8 +250,8 @@ const log = require('../util/log');
         logger.groupEnd();
       });
 
-      // Reset vertices
-      graph.vertices.forEach((vertex) => {
+      // Reset visited vertices
+      pathFindingResult.visited.forEach((vertex) => {
         vertex.reset();
         vertex.outgoingArcListPointer = null;
       });
@@ -270,6 +291,7 @@ const log = require('../util/log');
       output.blockingFlow = calculateBlockingFlow(levelGraph, graph, logger);
       output.levelGraph = levelGraph;
 
+      // Yield controll to caller
       yield output;
       // Reset vertices
       graph.vertices.forEach((vertex) => {
@@ -280,6 +302,7 @@ const log = require('../util/log');
       });
       levelGraph = buildLevelGraph(graph, logger);
     }
+    // BREAK CONDITION: the sink is not in the level graph. Hence, there are no more flow-augmenting paths
 
     logger.log('Terminate because there are no more flow augmenting paths');
     logger.groupEnd();
