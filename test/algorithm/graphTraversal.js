@@ -63,7 +63,6 @@ describe('Graph Traversal', () => {
       let traverse = graphTraversal.init(q, g);
       let output = traverse.next().value;
 
-      expect(output).to.have.property('aborescence').that.is.an('object');
       expect(output).to.have.property('lexicographical').that.is.an('array');
       expect(output).to.have.property('parenthetical').that.is.an('array');
       expect(output).to.have.property('arcs').that.is.an('array');
@@ -92,7 +91,6 @@ describe('Graph Traversal', () => {
       let traverse = graphTraversal.init(q, g);
       let output = graphTraversal.run(traverse);
 
-      expect(output).to.have.property('aborescence').that.is.an('object');
       expect(output).to.have.property('lexicographical').that.is.an('array');
       expect(output).to.have.property('parenthetical').that.is.an('array');
       expect(output).to.have.property('arcs').that.is.an('array');
@@ -248,7 +246,6 @@ describe('Graph Traversal', () => {
       let traverse = graphTraversal.init(q, g);
       let output = graphTraversal.run(traverse, g.sink);
 
-      expect(output).to.have.property('aborescence').that.is.an('object');
       expect(output).to.have.property('lexicographical').that.is.an('array');
       expect(output).to.have.property('parenthetical').that.is.an('array');
       expect(output).to.have.property('minCapacity').that.is.an('number');
