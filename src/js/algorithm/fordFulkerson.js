@@ -37,6 +37,7 @@ const log = require('../util/log');
     return result;
   }
 
+  // O( m * F)
   function* iterator(graph) {
     // Only print if console.group is supported
     let logger = log.create();

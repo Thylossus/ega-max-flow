@@ -207,6 +207,7 @@ const log = require('../util/log');
     // Dinic's blocking flow algorithm
     logger.group('Calculate a blocking flow on the provided level graph');
 
+    // Find a flow augmenting path in the level graph using a modified depth-first search
     let pathFindingResult = findFlowAugmentingPathInLevelGraph(levelGraph, logger);
     let blockingFlow = {
       arcs: [],
@@ -226,6 +227,7 @@ const log = require('../util/log');
 
         // Increase flow
         logger.log(`Increase the flow on the arc by ${pathFindingResult.minCapacity}`);
+        // Increase flow and decrease remaining capacity
         element.value.increaseFlow(pathFindingResult.minCapacity);
         logger.log(`New flow: ${element.value.flow}`);
 
@@ -267,6 +269,7 @@ const log = require('../util/log');
     return blockingFlow;
   }
 
+  // O(n^2 * m)
   function* iterator(graph) {
     let logger = log.create();
     let output = {

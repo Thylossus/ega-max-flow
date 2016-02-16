@@ -39,6 +39,7 @@ const log = require('../util/log');
     return result;
   }
 
+  // O(nm^2)
   function* iterator(graph) {
     let logger = log.create();
     let bfsResult = null;
