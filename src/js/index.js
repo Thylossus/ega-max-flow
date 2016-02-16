@@ -452,21 +452,25 @@ $(document).ready(() => {
     btnDownloadResults.show();
 
     resultString = '';
-    testEnvResult.forEach((instance) => {
-      if (instance.forEach) {
-          if (verbose) {
-            instance.forEach((algo) => {
-              resultString += algo.toString();
-            });
-          } else {
-            resultString += instance[instance.length - 1].toString();
-          }
-      } else {
-        // Manipulated iteration logger
-        resultString += instance.toString();
-      }
 
-    });
+    for (var i = 0; i < testEnvResult.length - 2; i++) {
+      let iter = testEnvResult[i];
+      if (verbose) {
+        iter.forEach((algo) => {
+          resultString += algo.toString();
+        });
+      } else {
+        resultString += iter[iter.length - 1].toString();
+      }
+    }
+
+    // Manipulated iteration
+    let manipulatedIteration = testEnvResult[testEnvResult.length - 2];
+    resultString += manipulatedIteration.toString();
+    // Summary
+    let summary = testEnvResult[testEnvResult.length - 1];
+    resultString += summary.toString();
+
   });
 
   btnDownloadResults.on('click', (e) => {

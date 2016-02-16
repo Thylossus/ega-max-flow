@@ -1,4 +1,7 @@
 const env = require('./env');
+const fs = require('fs');
+const path = require('path');
+const moment = require('moment');
 
 (function() {
   'use strict';
@@ -42,22 +45,64 @@ const env = require('./env');
     process.exit(1);
   }
 
+  // Run test environment
+  console.log('Running test environment...');
   let result = env(instances, vertices, maxCapacity);
+  let output = '';
+  let str;
 
-  result.forEach((instance) => {
-    if (instance.forEach) {
-      if (verbose) {
-        instance.forEach((algo) => {
-          console.log(algo.toString());
-        });
-      } else {
-        console.log(instance[instance.length - 1].toString());
-      }
+  for (var i = 0; i < instances; i++) {
+    let instance = result[i];
+    if (verbose) {
+      instance.forEach((algo, index) => {
+        str = algo.toString();
+        output += str;
+        if (index === instance.length - 1) {
+          console.log(str);
+        }
+      });
     } else {
-      // Manipulated iteration logger
-      console.log(instance.toString());
+      str = instance[instance.length - 1].toString();
+      output += str;
+      console.log(str);
     }
+  }
 
+  // Manipulated iteration
+  let manipulatedIteration = result[instances];
+  str = manipulatedIteration.toString();
+  output += str;
+  console.log(str);
+  // Summary
+  let summary = result[instances + 1];
+  str = summary.toString();
+  output += str;
+  console.log(str);
+
+  console.log('\nFinished test!');
+
+  let direxists = function direxists(path) {
+    try {
+      return fs.statSync(path).isDirectory();
+    } catch (e) {
+      return false;
+    }
+  };
+
+  // Write log to file
+  // Define log path
+  const logdir = path.join(__dirname, '..', '..', '..', 'logs');
+  // Create log dir if necessary
+  if (!direxists(logdir)) {
+    fs.mkdirSync(logdir);
+  }
+  // Build filename
+  const logfile = `${moment().format('YYYYMMDD-HHmmss')}_ega-test_${instances}-${vertices}-${maxCapacity}.log`;
+  const logpath = path.join(logdir, logfile);
+  console.log(`Writing file to ${logpath}...`);
+  fs.writeFile(logpath, output, (err) => {
+    if (err) throw err;
+    console.log('Done.');
   });
 
 }());

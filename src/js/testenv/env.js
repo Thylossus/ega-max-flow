@@ -16,6 +16,7 @@ const DINIC = 2;
 const PREFLOW_PUSH = 3;
 
 const SEPARATOR = '--------------------------------------------------------------------------------';
+const EOL = require('os').EOL;
 
 (function() {
   'use strict';
@@ -37,6 +38,8 @@ const SEPARATOR = '-------------------------------------------------------------
     logger.log(`Started at ${getTime()}`);
 
     let algoResult = algofn.run(algofn.init(graph));
+    // Add a final newline to the algorithm's logger
+    algoResult.logger.log(EOL)
 
     logger.log(`Finished at ${getTime()}`);
 
@@ -45,7 +48,7 @@ const SEPARATOR = '-------------------------------------------------------------
     logger.log(`The maximum flow is ${maxFlow}`);
 
     // Validate residual graph
-    validateResidualGraph(graph, logger);
+    result.valid = validateResidualGraph(graph, logger);
 
     // Add logger and max flow to results
     result.maxFlow = maxFlow;
@@ -151,12 +154,13 @@ const SEPARATOR = '-------------------------------------------------------------
     logger.log();
   };
 
-  let normalIteration = function normalIteration(graph, iteration) {
+  let normalIteration = function normalIteration(graph, iteration, summary) {
     let logger = log.create();
     let result = [];
     let allMaxFlows = [];
     let runResult;
     let maxFlow;
+    let valid = true;
 
     logSeparator(logger);
     logger.group(`Iteration ${iteration + 1}`);
@@ -165,26 +169,30 @@ const SEPARATOR = '-------------------------------------------------------------
     runResult = runAlgorithm(FORD_FULKERSON, fordFulkerson, graph, logger);
     result.push(runResult.logger);
     allMaxFlows.push(runResult.maxFlow);
+    valid = valid && runResult.valid;
 
     // Edmonds Karp
     runResult = runAlgorithm(EDMONDS_KARP, edmondsKarp, graph, logger);
     result.push(runResult.logger);
     allMaxFlows.push(runResult.maxFlow);
+    valid = valid && runResult.valid;
 
     // Dinic
     runResult = runAlgorithm(DINIC, dinic, graph, logger);
     result.push(runResult.logger);
     allMaxFlows.push(runResult.maxFlow);
+    valid = valid && runResult.valid;
 
     // Preflow-Push
     runResult = runAlgorithm(PREFLOW_PUSH, preflowPush, graph, logger);
     result.push(runResult.logger);
     allMaxFlows.push(runResult.maxFlow);
+    valid = valid && runResult.valid;
 
     // Check if all algorithms produced the same outcome, i.e. max flow
     // Use ford fulkerson's maximum flow as a reference value
     maxFlow = allMaxFlows[0];
-    checkMaxFlowEquality(maxFlow, allMaxFlows, logger);
+    valid = valid && checkMaxFlowEquality(maxFlow, allMaxFlows, logger);
 
     // Close iteration logging group
     logger.groupEnd();
@@ -194,6 +202,13 @@ const SEPARATOR = '-------------------------------------------------------------
 
     // Add iteration logger to result array
     result.push(logger);
+
+    // Add validity information to summary
+    if (valid) {
+      summary.log(`${iteration + 1}) passed`);
+    } else {
+      summary.log(`${iteration + 1}) failed`);
+    }
 
     return result;
   };
@@ -320,20 +335,28 @@ const SEPARATOR = '-------------------------------------------------------------
 
   module.exports = (instances, vertices, maxCapacity) => {
     let result = [];
+    let summary = log.create();
     let graph;
+
+    logSeparator(summary);
+    summary.group('Summary');
 
     for (var i = 0; i < instances; i++) {
       // Generate graph (provide false to ensure that the graph is unordered)
       graph = graphGen.create(vertices, maxCapacity, false).run();
 
       // Set result for this instance
-      result[i] = normalIteration(graph, i);
+      result[i] = normalIteration(graph, i, summary);
 
     }
+
+    summary.groupEnd();
+    logSeparator(summary);
 
     // Generate graph (provide false to ensure that the graph is unordered)
     graph = graphGen.create(vertices, maxCapacity, false).run();
     result[result.length] = manipulatedIteration(graph);
+    result[result.length] = summary;
 
     return result;
   };

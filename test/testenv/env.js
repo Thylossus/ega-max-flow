@@ -21,8 +21,8 @@ describe('Test Environment', () => {
     let result = env(instances, 100, 100);
 
     expect(result).to.be.an('array');
-    // + 1 for the manipulated iteration
-    expect(result).to.have.length(instances + 1);
+    // + 2 for the manipulated iteration and the summary
+    expect(result).to.have.length(instances + 2);
     for (let i = 0; i < instances; i++) {
       let instanceResult = result[i];
 
@@ -35,6 +35,8 @@ describe('Test Environment', () => {
     }
 
     // Expect the logger for the manipulated iteration
+    expect(result[result.length - 2]).to.be.instanceOf(log.Logger);
+    // Expect the logger for the summary
     expect(result[result.length - 1]).to.be.instanceOf(log.Logger);
 
     done();
