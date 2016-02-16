@@ -129,7 +129,7 @@ const log = require('../util/log');
   function relabel(graph, a, v, logger) {
     logger.group(`Relabel ${v.id}`);
 
-    // Step 4.1: Find minimum neighbor distance TODO: check if this violates the complexity constraints
+    // Step 4.1: Find minimum neighbor distance
     let dMin = v.outgoingArcs.reduce((min, arc) => {
       // Check if arc.capacity > 0 because arc has to be in the residual network
       if (arc.capacity > 0) {
@@ -154,6 +154,7 @@ const log = require('../util/log');
     return oldDistance;
   }
 
+  // O(n^2 * m)
   function* iterator(graph) {
     // Only print if console.group is supported
     let logger = log.create();
@@ -188,7 +189,7 @@ const log = require('../util/log');
         a = v.nextArc();
       }
 
-      if (a && a.isAdmissable) {
+      if (a && a.isAdmissable()) {
         // Step 3: push
         output.stepInfo = push(graph, a, v, S, logger);
         output.flow[a.id] = a.flow;
