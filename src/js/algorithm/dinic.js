@@ -59,7 +59,7 @@ const log = require('../util/log');
         }
 
         // Add the arc a to the outgoing and incoming arc lists
-        logger.log(`Add the arc ${a.from.id} -> ${a.to.id} to ${a.from.id}'s outgoning arc list`);
+        logger.log(`Add the arc ${a.from.id} -> ${a.to.id} to ${a.from.id}'s outgoing arc list`);
         outgoingArcListElement = a.from.outgoingArcList.add(a);
         logger.log(`Add the arc ${a.from.id} -> ${a.to.id} to ${a.to.id}'s incoming arc list`);
         incomingArcListElement = a.to.incomingArcList.add(a);
